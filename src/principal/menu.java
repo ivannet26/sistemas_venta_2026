@@ -10,12 +10,12 @@ import javax.swing.JOptionPane;
 //import proyecto_gm.Tipo.frmTipo;
 //import proyecto_gm.Facultades.frmFacultades;
 //import proyecto_gm.Carreras.frmCarreras;
-//import proyecto_gm.Cargo.frmCargo;
-//import proyecto_gm.Area.frmArea;
-//import proyecto_gm.Articulo.frmListaArticulo;
+import proyecto_gm.Cargo.frmCargo;
+import proyecto_gm.Area.frmArea;
+import proyecto_gm.Articulo.frmListaArticulo;
 //import proyecto_gm.Asistencias.frmAsistencias;
 //import proyecto_gm.CabeceraComprobante.frmListarCabecera;
-//import proyecto_gm.Categoria.frmCategoria;
+import proyecto_gm.Categoria.frmCategoria;
 //import proyecto_gm.Comunicacion.frmListaComunicacion;
 //import proyecto_gm.Contactos.frmListaContacto;
 //import proyecto_gm.Cuentas.frmListaCuentas;
@@ -30,6 +30,8 @@ import javax.swing.JOptionPane;
 //import proyecto_gm.credencial.frmCredencial;
 import java.sql.CallableStatement;
 import java.sql.ResultSet;
+//import proyecto_gm.Area.frmArea;
+//import proyecto_gm.Cargo.frmCargo;
 //import proyecto_gm.Archivos.frmArchivos;
 //import proyecto_gm.Asistencias.frmAsistenciaImagen;
 //import proyecto_gm.Empleado.frmListaEmpleado;
@@ -794,33 +796,33 @@ public class menu extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-//           private void Abrirareas() {
-//                frmArea verventana = frmArea.getInstancia();
-//                if (verventana.getParent() == null) {
-//                    escritorio.add(verventana);
-//                }
-//                try {
-//                    verventana.setVisible(true);
-//                    verventana.setSelected(true);
-//                    verventana.toFront();
-//                } catch (java.beans.PropertyVetoException e) {
-//                    javax.swing.JOptionPane.showMessageDialog(this, e.getMessage());
-//                }
-//            }
+           private void Abrirareas() {
+                frmArea verventana = frmArea.getInstancia();
+                if (verventana.getParent() == null) {
+                    escritorio.add(verventana);
+                }
+                try {
+                    verventana.setVisible(true);
+                    verventana.setSelected(true);
+                    verventana.toFront();
+                } catch (java.beans.PropertyVetoException e) {
+                    javax.swing.JOptionPane.showMessageDialog(this, e.getMessage());
+                }
+            }
         
-//        private void Abrirarticulos(){
-//            frmListaArticulo verventana = frmListaArticulo.getInstancia();
-//            if (verventana.getParent() == null) {
-//                escritorio.add(verventana);
-//            }
-//            try {
-//                verventana.setVisible(true);
-//                verventana.setSelected(true);
-//                verventana.toFront();
-//            } catch (java.beans.PropertyVetoException e) {
-//                javax.swing.JOptionPane.showMessageDialog(this, e.getMessage());
-//            }
-//        }
+        private void Abrirarticulos(){
+            frmListaArticulo verventana = frmListaArticulo.getInstancia();
+            if (verventana.getParent() == null) {
+                escritorio.add(verventana);
+            }
+            try {
+                verventana.setVisible(true);
+                verventana.setSelected(true);
+                verventana.toFront();
+            } catch (java.beans.PropertyVetoException e) {
+                javax.swing.JOptionPane.showMessageDialog(this, e.getMessage());
+            }
+        }
         
 //        private void Abrirasistencias() {
 //            for (javax.swing.JInternalFrame frame : escritorio.getAllFrames()) {
@@ -905,20 +907,20 @@ public class menu extends javax.swing.JFrame {
 //            }
 //        }
         
-//        private void Abrircargos() {
-//            frmCargo verventana = frmCargo.getInstancia();
-//
-//            if (verventana.getParent() == null) {
-//                escritorio.add(verventana);
-//            }
-//            try {
-//                verventana.setVisible(true);
-//                verventana.setSelected(true);
-//                verventana.toFront();
-//            } catch (java.beans.PropertyVetoException e) {
-//                Utilitario.MostrarMensaje(e.getMessage(), Utilitario.TipoMensaje.error);
-//            }
-//        }
+        private void Abrircargos() {
+            frmCargo verventana = frmCargo.getInstancia();
+
+            if (verventana.getParent() == null) {
+                escritorio.add(verventana);
+            }
+            try {
+                verventana.setVisible(true);
+                verventana.setSelected(true);
+                verventana.toFront();
+            } catch (java.beans.PropertyVetoException e) {
+                Utilitario.MostrarMensaje(e.getMessage(), Utilitario.TipoMensaje.error);
+            }
+        }
 //        
 //        private void Abrircarreras(){
 //            frmCarreras ventana = frmCarreras.getInstancia();
@@ -934,19 +936,19 @@ public class menu extends javax.swing.JFrame {
 //            }
 //        }
 //        
-//        private void Abrircategorias(){
-//            frmCategoria ventana = frmCategoria.getInstancia();
-//            if (ventana.getParent() == null) {
-//                escritorio.add(ventana);
-//            }
-//            try {
-//                ventana.setVisible(true);
-//                ventana.setSelected(true);
-//                ventana.toFront();
-//            } catch (java.beans.PropertyVetoException e) {
-//                JOptionPane.showMessageDialog(this, "Error al acceder: " + e.getMessage());
-//            }
-//        }
+        private void Abrircategorias(){
+            frmCategoria ventana = frmCategoria.getInstancia();
+            if (ventana.getParent() == null) {
+                escritorio.add(ventana);
+            }
+            try {
+                ventana.setVisible(true);
+                ventana.setSelected(true);
+                ventana.toFront();
+            } catch (java.beans.PropertyVetoException e) {
+                JOptionPane.showMessageDialog(this, "Error al acceder: " + e.getMessage());
+            }
+        }
         private void Abrircomprobantes(){}
         private void Abrirclientes(){
         
@@ -983,7 +985,7 @@ public class menu extends javax.swing.JFrame {
 //        }
         
         private void Abrircontratos(){
-        
+        //
         }
         
 //        private void Abrircuentasbancarias(){
@@ -1329,11 +1331,11 @@ public class menu extends javax.swing.JFrame {
     }//GEN-LAST:event_subMenuTipoEmpleadoActionPerformed
 
     private void subMenuCargosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subMenuCargosActionPerformed
-//        Abrircargos();
+        Abrircargos();
     }//GEN-LAST:event_subMenuCargosActionPerformed
 
     private void subMenuAreasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subMenuAreasActionPerformed
-//        Abrirareas();
+        Abrirareas();
     }//GEN-LAST:event_subMenuAreasActionPerformed
 
     private void submenuAsistenciaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submenuAsistenciaActionPerformed
@@ -1361,11 +1363,11 @@ public class menu extends javax.swing.JFrame {
     }//GEN-LAST:event_subMenuTransferenciaActionPerformed
 
     private void subMenuCategoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subMenuCategoriaActionPerformed
-//        Abrircategorias();
+        Abrircategorias();
     }//GEN-LAST:event_subMenuCategoriaActionPerformed
 
     private void subMenuArticulosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subMenuArticulosActionPerformed
-//        Abrirarticulos();
+        Abrirarticulos();
     }//GEN-LAST:event_subMenuArticulosActionPerformed
 
     private void subMenuClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subMenuClientesActionPerformed
