@@ -17,8 +17,8 @@ public class ConexionBD {
     }
     
   private static String getUrlDinamica(String baseDatos) {
-        String host = "mysql-a21bb78-sistemasnet26-321c.k.aivencloud.com";
-        String puerto = "10658";
+        String host = "";
+        String puerto = "";
         
         return "jdbc:mysql://" + host + ":" + puerto + "/" + baseDatos + 
                "?useSSL=true&requireSSL=true&allowPublicKeyRetrieval=true";
@@ -26,8 +26,8 @@ public class ConexionBD {
 
     public static Connection getConnection() {
         try {
-            String user = "avnadmin";
-            String pass = "AVNS_3EXlVnZgr-iQnJNfzBM";
+            String user = "";
+            String pass = "";
             String db = "gmingenieros"; 
 
             Class.forName("com.mysql.cj.jdbc.Driver");
