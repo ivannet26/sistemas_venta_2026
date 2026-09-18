@@ -117,7 +117,7 @@ public class inicio extends javax.swing.JFrame {
                 idUsuarioValidado = rs.getInt("IdUsuario");
             }
 
-        } catch (Exception e) {
+        } catch (SQLException e) {
         }
 
         if (idUsuarioValidado > 0) {
