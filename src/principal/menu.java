@@ -30,6 +30,9 @@ import proyecto_gm.Categoria.frmCategoria;
 //import proyecto_gm.credencial.frmCredencial;
 import java.sql.CallableStatement;
 import java.sql.ResultSet;
+import proyecto_gm.Empleado.Empleado;
+import proyecto_gm.Empleado.frmEmpleado;
+import proyecto_gm.Empleado.frmListaEmpleado;
 //import proyecto_gm.Area.frmArea;
 //import proyecto_gm.Cargo.frmCargo;
 //import proyecto_gm.Archivos.frmArchivos;
@@ -42,12 +45,13 @@ import java.sql.ResultSet;
 //import proyecto_gm.Usuario.frmUsuario;
 //import proyecto_gm.Perfil.frmPerfil;
 //import proyecto_gm.Horarios.frmListaHorarios;
+
 public class menu extends javax.swing.JFrame {
 
     static Connection conn = ConexionBD.getConnection();
-    
+
     public menu() {
-        initComponents();        
+        initComponents();
         setSize(1100, 700);
         this.setLocationRelativeTo(null);
         DeshabilitarMenu();
@@ -58,15 +62,15 @@ public class menu extends javax.swing.JFrame {
         String datoUsuario = "Usuario: " + ConexionBD.nomUsuario + "\t\t";
         String datoPerfil = "Perfil: " + ConexionBD.nomPerfil + "\t\t\t";
         //String rucEmpresa = Actualizador.Configurador.getDato("ruc");
-        String rucEmpresa ="";
+        String rucEmpresa = "";
         //String nombreEmpresa = Actualizador.Configurador.getDato("nombre");
-        String nombreEmpresa ="";
+        String nombreEmpresa = "";
         String datoEmpresa = rucEmpresa + " - " + nombreEmpresa;
 
         this.lblEstadoSesion.setText(datoUsuario + "        " + datoPerfil + "       " + datoEmpresa);
     }
-    
-    void DeshabilitarMenu(){
+
+    void DeshabilitarMenu() {
         this.menuAdministracion.setVisible(false);
         this.menuFacturacion.setVisible(false);
         this.menuLogistica.setVisible(false);
@@ -75,7 +79,7 @@ public class menu extends javax.swing.JFrame {
         this.menuTesoreria.setVisible(false);
         this.menuConfiguracion.setVisible(false);
         //this.menuSeguridad.setVisible(false);
-        
+
         this.subMenuCargos.setVisible(false);
         this.subMenuAreas.setVisible(false);
         this.subMenuTipoEmpleado.setVisible(false);
@@ -83,7 +87,7 @@ public class menu extends javax.swing.JFrame {
         this.subMenuTipoDocumento.setVisible(false);
         this.submenuContratosPersonal.setVisible(false);
         this.subMenuRelojActividad.setVisible(false);
-        
+
         this.subMenuReciboHonorario.setVisible(false);
         this.subMenuComprobante.setVisible(false);
         this.subMenuTransferencia.setVisible(false);
@@ -109,7 +113,6 @@ public class menu extends javax.swing.JFrame {
         this.subMenuFlujoCaja.setVisible(false);
         this.subMenuCuentasBancarias.setVisible(false);
         this.subMenuViaticos.setVisible(false);*/
-
         this.subMenuPeriodos.setVisible(false);
         this.subMenuModulos.setVisible(false);
         this.subMenuDepartamentos.setVisible(false);
@@ -117,62 +120,61 @@ public class menu extends javax.swing.JFrame {
         this.menuSeguridad.setVisible(false);
         this.subMenuUsuario.setVisible(false);
         this.subMenuPermisosxPerfil.setVisible(false);
-        this.subMenuPerfil.setVisible(false); 
-                
-        
+        this.subMenuPerfil.setVisible(false);
+
     }
-    void TraerMenu(String codperfil){
-         //deshabiliar todo
-        
-        try{
-            
-        CallableStatement cstmt =  conn.prepareCall("call listar_Menuxperfil(?,?)");
-        cstmt.setString(1, "01");
-        cstmt.setString(2, codperfil);
-        System.out.println(codperfil);
-        ResultSet rs = cstmt.executeQuery();
-         
-        //pst.setString(1, "01"); // codmodulo
-        //pst.setString(2, "01"); // perfil 
-        //ResultSet rs = pst.executeQuery();
-        
-        while(rs.next()){
-            String nombre = rs.getString("nombre");
-            this.Habilitar(nombre);
-            //System.out.println(nombre); 
-        }
-        }catch(SQLException exSql){
-            JOptionPane.showMessageDialog(null,exSql.getMessage(), 
+
+    void TraerMenu(String codperfil) {
+        //deshabiliar todo
+
+        try {
+            //CAMBIAR CODIGO EN PRODUCCION 
+            CallableStatement cstmt = conn.prepareCall("call listar_Menuxperfil(?,?)");
+            cstmt.setString(1, "01");
+            cstmt.setString(2, "01");
+            System.out.println(codperfil);
+            ResultSet rs = cstmt.executeQuery();
+
+            //pst.setString(1, "01"); // codmodulo
+            //pst.setString(2, "01"); // perfil 
+            //ResultSet rs = pst.executeQuery();
+            while (rs.next()) {
+                String nombre = rs.getString("nombre");
+                this.Habilitar(nombre);
+                //System.out.println(nombre); 
+            }
+        } catch (SQLException exSql) {
+            JOptionPane.showMessageDialog(null, exSql.getMessage(),
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    void Habilitar(String nombreMenu){
+    void Habilitar(String nombreMenu) {
         switch (nombreMenu) {
             case "menuAdministracion":
                 this.menuAdministracion.setVisible(true);
-             
+
                 break;
             case "menuFacturacion":
                 this.menuFacturacion.setVisible(true);
                 break;
-             case "menuLogistica": 
+            case "menuLogistica":
                 this.menuLogistica.setVisible(true);
                 break;
-            case "menuProyecto": 
+            case "menuProyecto":
                 this.menuProyecto.setVisible(true);
                 break;
-             case "menuRecursosHumanos": 
-                 this.menuRecursosHumanos.setVisible(true);
-                 break;
-            case "menuTesoreria": 
+            case "menuRecursosHumanos":
+                this.menuRecursosHumanos.setVisible(true);
+                break;
+            case "menuTesoreria":
                 this.menuTesoreria.setVisible(true);
                 break;
-            
+
             case "menuConfiguracion":
                 this.menuConfiguracion.setVisible(true);
-                break;                                                                                    
-            case "menuSeguridad":                 
+                break;
+            case "menuSeguridad":
                 this.menuSeguridad.setVisible(true);
                 break;
             case "subMenuCargos":
@@ -187,10 +189,10 @@ public class menu extends javax.swing.JFrame {
             case "submenuAsistencia":
                 this.submenuAsistencia.setVisible(true);
                 break;
-            case "subMenuTipoDocumento": 
+            case "subMenuTipoDocumento":
                 this.subMenuTipoDocumento.setVisible(true);
                 break;
-            
+
             case "submenuContratosPersonal":
                 this.submenuContratosPersonal.setVisible(true);
                 break;
@@ -201,36 +203,36 @@ public class menu extends javax.swing.JFrame {
             case "subMenuComprobante":
                 this.subMenuComprobante.setVisible(true);
                 break;
-            case "subMenuCajaChica": 
+            case "subMenuCajaChica":
                 this.subMenuCajaChica.setVisible(true);
                 break;
-                
-            case "subMenuTransferencia": 
+
+            case "subMenuTransferencia":
                 this.subMenuTransferencia.setVisible(true);
                 break;
-                
+
             case "subMenuCategoria":
                 this.subMenuCategoria.setVisible(true);
                 break;
 
-            case "subMenuArticulos": 
+            case "subMenuArticulos":
                 this.subMenuArticulos.setVisible(true);
                 break;
-            case "subMenuClientes"    :
+            case "subMenuClientes":
                 this.subMenuClientes.setVisible(true);
                 break;
             case "subMenuComunicaciones":
                 this.subMenuComunicaciones.setVisible(true);
                 break;
-             
+
             case "subMenuContactos":
                 this.subMenuContactos.setVisible(true);
                 break;
-                
+
             case "submenuContratoProyecto":
                 this.submenuContratoProyecto.setVisible(true);
                 break;
-                
+
             case "subMenuExpLaboral":
                 this.subMenuExpLaboral.setVisible(true);
                 break;
@@ -238,15 +240,15 @@ public class menu extends javax.swing.JFrame {
             case "subMenuCarreras":
                 this.subMenuCarreras.setVisible(true);
                 break;
-                
+
             case "subMenuInstituciones":
                 this.subMenuInstituciones.setVisible(true);
                 break;
-                
+
             case "subMenuFacultades":
                 this.subMenuFacultades.setVisible(true);
                 break;
-                
+
             case "subMenuHorarios":
                 this.subMenuHorarios.setVisible(true);
                 break;
@@ -254,17 +256,15 @@ public class menu extends javax.swing.JFrame {
             case "subMenuProveedores":
                 this.subMenuProveedores.setVisible(true);
                 break;
-                
-                
+
             case "subMenuEmpleados":
                 this.subMenuEmpleados.setVisible(true);
                 break;
-                
-                
+
             case "subMenuBancos":
                 this.subMenuBancos.setVisible(true);
                 break;
-                
+
             case "subMenuFlujoCaja":
                 this.subMenuFlujoCaja.setVisible(true);
                 break;
@@ -274,23 +274,20 @@ public class menu extends javax.swing.JFrame {
             case "subMenuViaticos":
                 this.subMenuViaticos.setVisible(true);
                 break;
-                
 
-                case "subMenuPeriodos":
+            case "subMenuPeriodos":
                 this.subMenuPeriodos.setVisible(true);
                 break;
-                
-                
-                case "subMenuModulos":
+
+            case "subMenuModulos":
                 this.subMenuModulos.setVisible(true);
                 break;
-                
-                
-                case "subMenuDepartamentos":
+
+            case "subMenuDepartamentos":
                 this.subMenuDepartamentos.setVisible(true);
                 break;
-                
-                case "subMenuCredencial":
+
+            case "subMenuCredencial":
                 this.subMenuCredencial.setVisible(true);
                 break;
             case "subMenuRelojActividad":
@@ -309,12 +306,9 @@ public class menu extends javax.swing.JFrame {
                 throw new AssertionError();
         }
     }
-    
-    
-    
-  
+
     private void cargarFormulario(java.util.function.Supplier<javax.swing.JInternalFrame> cargador) {
-            
+
         principal.SplashCarga splash = new principal.SplashCarga();
         splash.setVisible(true);
         splash.setLocationRelativeTo(null);
@@ -327,8 +321,6 @@ public class menu extends javax.swing.JFrame {
                 }
 
                 javax.swing.JInternalFrame ventana = cargador.get();
-                
-                
 
                 for (int i = 16; i <= 100; i++) {
                     Thread.sleep(3);
@@ -424,6 +416,7 @@ public class menu extends javax.swing.JFrame {
                 formWindowClosing(evt);
             }
         });
+        getContentPane().setLayout(new java.awt.BorderLayout());
 
         jPanel2.setLayout(new java.awt.GridLayout(1, 1));
 
@@ -796,34 +789,34 @@ public class menu extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-           private void Abrirareas() {
-                frmArea verventana = frmArea.getInstancia();
-                if (verventana.getParent() == null) {
-                    escritorio.add(verventana);
-                }
-                try {
-                    verventana.setVisible(true);
-                    verventana.setSelected(true);
-                    verventana.toFront();
-                } catch (java.beans.PropertyVetoException e) {
-                    javax.swing.JOptionPane.showMessageDialog(this, e.getMessage());
-                }
-            }
-        
-        private void Abrirarticulos(){
-            frmListaArticulo verventana = frmListaArticulo.getInstancia();
-            if (verventana.getParent() == null) {
-                escritorio.add(verventana);
-            }
-            try {
-                verventana.setVisible(true);
-                verventana.setSelected(true);
-                verventana.toFront();
-            } catch (java.beans.PropertyVetoException e) {
-                javax.swing.JOptionPane.showMessageDialog(this, e.getMessage());
-            }
+    private void Abrirareas() {
+        frmArea verventana = frmArea.getInstancia();
+        if (verventana.getParent() == null) {
+            escritorio.add(verventana);
         }
-        
+        try {
+            verventana.setVisible(true);
+            verventana.setSelected(true);
+            verventana.toFront();
+        } catch (java.beans.PropertyVetoException e) {
+            javax.swing.JOptionPane.showMessageDialog(this, e.getMessage());
+        }
+    }
+
+    private void Abrirarticulos() {
+        frmListaArticulo verventana = frmListaArticulo.getInstancia();
+        if (verventana.getParent() == null) {
+            escritorio.add(verventana);
+        }
+        try {
+            verventana.setVisible(true);
+            verventana.setSelected(true);
+            verventana.toFront();
+        } catch (java.beans.PropertyVetoException e) {
+            javax.swing.JOptionPane.showMessageDialog(this, e.getMessage());
+        }
+    }
+
 //        private void Abrirasistencias() {
 //            for (javax.swing.JInternalFrame frame : escritorio.getAllFrames()) {
 //                if (frame instanceof frmAsistencias) {
@@ -881,11 +874,9 @@ public class menu extends javax.swing.JFrame {
 //            };
 //            hilo.start();
 //        }
-        
-        
-        private void Abrirbancos(){
-        }
-        
+    private void Abrirbancos() {
+    }
+
 //        private void Abrircabeceracomprobante(){
 //            frmListarCabecera verventana = new frmListarCabecera();
 //        escritorio.add(verventana);
@@ -906,21 +897,20 @@ public class menu extends javax.swing.JFrame {
 //                JOptionPane.showMessageDialog(this, "Error al abrir Caja Chica: " + e.getMessage());
 //            }
 //        }
-        
-        private void Abrircargos() {
-            frmCargo verventana = frmCargo.getInstancia();
+    private void Abrircargos() {
+        frmCargo verventana = frmCargo.getInstancia();
 
-            if (verventana.getParent() == null) {
-                escritorio.add(verventana);
-            }
-            try {
-                verventana.setVisible(true);
-                verventana.setSelected(true);
-                verventana.toFront();
-            } catch (java.beans.PropertyVetoException e) {
-                Utilitario.MostrarMensaje(e.getMessage(), Utilitario.TipoMensaje.error);
-            }
+        if (verventana.getParent() == null) {
+            escritorio.add(verventana);
         }
+        try {
+            verventana.setVisible(true);
+            verventana.setSelected(true);
+            verventana.toFront();
+        } catch (java.beans.PropertyVetoException e) {
+            Utilitario.MostrarMensaje(e.getMessage(), Utilitario.TipoMensaje.error);
+        }
+    }
 //        
 //        private void Abrircarreras(){
 //            frmCarreras ventana = frmCarreras.getInstancia();
@@ -936,24 +926,28 @@ public class menu extends javax.swing.JFrame {
 //            }
 //        }
 //        
-        private void Abrircategorias(){
-            frmCategoria ventana = frmCategoria.getInstancia();
-            if (ventana.getParent() == null) {
-                escritorio.add(ventana);
-            }
-            try {
-                ventana.setVisible(true);
-                ventana.setSelected(true);
-                ventana.toFront();
-            } catch (java.beans.PropertyVetoException e) {
-                JOptionPane.showMessageDialog(this, "Error al acceder: " + e.getMessage());
-            }
+
+    private void Abrircategorias() {
+        frmCategoria ventana = frmCategoria.getInstancia();
+        if (ventana.getParent() == null) {
+            escritorio.add(ventana);
         }
-        private void Abrircomprobantes(){}
-        private void Abrirclientes(){
-        
+        try {
+            ventana.setVisible(true);
+            ventana.setSelected(true);
+            ventana.toFront();
+        } catch (java.beans.PropertyVetoException e) {
+            JOptionPane.showMessageDialog(this, "Error al acceder: " + e.getMessage());
         }
-        
+    }
+
+    private void Abrircomprobantes() {
+    }
+
+    private void Abrirclientes() {
+
+    }
+
 //        private void Abrircomunicaciones(){
 //            frmListaComunicacion ventana = frmListaComunicacion.getInstancia();
 //            ventana.AsignarPadre(escritorio);
@@ -983,11 +977,10 @@ public class menu extends javax.swing.JFrame {
 //                javax.swing.JOptionPane.showMessageDialog(this, "Error al abrir lista de contactos: " + e.getMessage());
 //            }
 //        }
-        
-        private void Abrircontratos(){
+    private void Abrircontratos() {
         //
-        }
-        
+    }
+
 //        private void Abrircuentasbancarias(){
 //            frmListaCuentas ventana = frmListaCuentas.getInstancia();
 //            if (ventana.getParent() == null) {
@@ -1016,11 +1009,10 @@ public class menu extends javax.swing.JFrame {
 //                JOptionPane.showMessageDialog(this, "Error al abrir departamentos: " + e.getMessage());
 //            }
 //        }
-        
-        private void Abrirdetalles_asistencia(){
-        
-        }
-        
+    private void Abrirdetalles_asistencia() {
+
+    }
+
 //        private void Abrirempleados(){
 //            frmListaEmpleado ventana = frmListaEmpleado.getInstancia(escritorio);
 //            if (ventana.getParent() == null) {
@@ -1034,11 +1026,10 @@ public class menu extends javax.swing.JFrame {
 //                JOptionPane.showMessageDialog(this, "Error al abrir lista de empleados: " + e.getMessage());
 //            }
 //        }
-        
-        private void Abrirexperiencialaboral(){
-        
-        }
-        
+    private void Abrirexperiencialaboral() {
+
+    }
+
 //        private void Abrirfacultades(){
 //            frmFacultades ventana = frmFacultades.getInstancia();
 //            if (ventana.getParent() == null) {
@@ -1052,7 +1043,6 @@ public class menu extends javax.swing.JFrame {
 //                JOptionPane.showMessageDialog(this, "Error al abrir facultades: " + e.getMessage());
 //            }
 //        }
-        
 //        private void AbrirHorarios(){
 //            frmListaHorarios ventana = frmListaHorarios.getInstancia();
 //            if (ventana.getParent() == null) {
@@ -1066,8 +1056,6 @@ public class menu extends javax.swing.JFrame {
 //                javax.swing.JOptionPane.showMessageDialog(this, "Error al abrir lista de horarios: " + e.getMessage());
 //            }
 //        }
-        
-        
 //        private void Abririnstitucioneseducativas(){
 //            frmListaInstituciones ventana = frmListaInstituciones.getInstancia();
 //            if (ventana.getParent() == null) {
@@ -1082,7 +1070,6 @@ public class menu extends javax.swing.JFrame {
 //                javax.swing.JOptionPane.showMessageDialog(this, "Error al abrir instituciones: " + e.getMessage());
 //            }
 //        }
-        
 //        private void Abrirmodulos(){
 //            frmModulo ventana = frmModulo.getInstancia();
 //            if (ventana.getParent() == null) {
@@ -1152,7 +1139,6 @@ public class menu extends javax.swing.JFrame {
 //                Utilitario.MostrarMensaje("Error al abrir: " + e.getMessage(), Utilitario.TipoMensaje.error);
 //            }
 //        }
-        
 //        private void Abrirtiposempleados(){
 //            frmTipo ventana = frmTipo.getInstancia();
 //
@@ -1168,7 +1154,6 @@ public class menu extends javax.swing.JFrame {
 //                JOptionPane.showMessageDialog(this, "Error al abrir Tipos: " + e.getMessage());
 //            }
 //        }
-        
 //        private void Abrirtransferenciasbancarias(){
 //            frmListaTransferencias ventana = frmListaTransferencias.getInstancia();
 //            if (ventana.getParent() == null) {
@@ -1182,11 +1167,10 @@ public class menu extends javax.swing.JFrame {
 //                javax.swing.JOptionPane.showMessageDialog(this, "Error al acceder al módulo: " + e.getMessage());
 //            }
 //        }
-        
-        private void Abrirusuarios(){
-        
-        }
-        
+    private void Abrirusuarios() {
+
+    }
+
 //        private void Abrirviaticos(){
 //            frmListaViaticos ventana = frmListaViaticos.getInstancia();
 //            if (ventana.getParent() == null) {
@@ -1200,7 +1184,6 @@ public class menu extends javax.swing.JFrame {
 //                Utilitario.MostrarMensaje("Error al abrir viáticos: " + e.getMessage(), Utilitario.TipoMensaje.error);
 //            }
 //        }
-        
 //        private void Abrircredencial(){
 //            frmCredencial ventana = frmCredencial.getInstancia();
 //            if (ventana.getParent() == null) {
@@ -1310,7 +1293,7 @@ public class menu extends javax.swing.JFrame {
 //                System.err.println("Error al enfocar la ventana de reportes: " + e.getMessage());
 //            }
 //        }
-        
+
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         /*    
         try ( 
@@ -1323,7 +1306,7 @@ public class menu extends javax.swing.JFrame {
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
-                */
+         */
     }//GEN-LAST:event_formWindowClosing
 
     private void subMenuTipoEmpleadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subMenuTipoEmpleadoActionPerformed
@@ -1355,7 +1338,7 @@ public class menu extends javax.swing.JFrame {
     }//GEN-LAST:event_subMenuReciboHonorarioActionPerformed
 
     private void subMenuComprobanteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subMenuComprobanteActionPerformed
-         /* cargarFormulario(() -> frmComprobantes.getInstancia()); */ 
+        /* cargarFormulario(() -> frmComprobantes.getInstancia()); */
     }//GEN-LAST:event_subMenuComprobanteActionPerformed
 
     private void subMenuTransferenciaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subMenuTransferenciaActionPerformed
@@ -1380,7 +1363,7 @@ public class menu extends javax.swing.JFrame {
 
     private void subMenuContactosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subMenuContactosActionPerformed
 //         Abrircontactos();
-        
+
     }//GEN-LAST:event_subMenuContactosActionPerformed
 
     private void submenuContratoProyectoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submenuContratoProyectoActionPerformed
@@ -1408,7 +1391,7 @@ public class menu extends javax.swing.JFrame {
     }//GEN-LAST:event_subMenuProveedoresActionPerformed
 
     private void subMenuEmpleadosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subMenuEmpleadosActionPerformed
-//        cargarFormulario(() -> frmListaEmpleado.getInstancia(escritorio));
+        cargarFormulario(() -> new frmListaEmpleado());
     }//GEN-LAST:event_subMenuEmpleadosActionPerformed
 
     private void subMenuBancosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subMenuBancosActionPerformed
@@ -1475,7 +1458,6 @@ public class menu extends javax.swing.JFrame {
 //       AbrirReportes(); 
     }//GEN-LAST:event_subReportesActionPerformed
 
-   
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
