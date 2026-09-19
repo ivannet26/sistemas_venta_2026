@@ -88,7 +88,7 @@ public class frmListaArticulo extends javax.swing.JInternalFrame {
     
     public void generarReporteJasper(int idCategoria, String nombreCategoria) {
         try {
-            Connection conn = ConexionBD.getConnection();
+            Connection conn = ConexionBD.getConexionCompartida();
             String path = System.getProperty("user.dir") +"/reportes/RPTArticulo.jasper";
             JasperReport reporte = JasperCompileManager.compileReport(path);
 

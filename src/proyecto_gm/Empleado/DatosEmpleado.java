@@ -4,6 +4,7 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -11,10 +12,10 @@ import principal.ConexionBD;
 
 public class DatosEmpleado {
 
-    static final Connection conn = ConexionBD.getConnection();
-
-    public List<EmpleadoDTO> listar(String nombre, String estado, Integer idArea, Integer idTipo) {
-        List<EmpleadoDTO> lista = new ArrayList<>();
+    public List<Empleado> listar(String nombre, String estado, Integer idArea, Integer idTipo) {
+        List<Empleado> lista = new ArrayList<>();
+        Connection conn = ConexionBD.getConexionCompartida();
+        if (conn == null) return lista;
         try ( CallableStatement stmt = conn.prepareCall("CALL listar_empleados(?,?,?,?)")) {
             stmt.setString(1, (nombre == null || nombre.isBlank()) ? null : nombre.trim());
             stmt.setString(2, (estado == null || estado.isBlank()) ? "T" : estado);
@@ -31,9 +32,12 @@ public class DatosEmpleado {
         return lista;
     }
 
-    private EmpleadoDTO mapearDTO(ResultSet rs) throws SQLException {
-        return new EmpleadoDTO(
+    private Empleado mapearDTO(ResultSet rs) throws SQLException {
+        return new Empleado(
                 rs.getInt("IdEmpleado"),
+                rs.getInt("IdArea"),
+                rs.getInt("IdTipoEmpleado"),
+                rs.getInt("IdCargo"),
                 rs.getString("Apellidos"),
                 rs.getString("Nombres"),
                 rs.getDate("FechaNacimiento"),
@@ -46,22 +50,22 @@ public class DatosEmpleado {
                 rs.getString("Estado"),
                 rs.getString("Anio"),
                 rs.getString("Mes"),
-                rs.getInt("IdArea"),
                 rs.getString("Area"),
-                rs.getInt("IdCargo"),
                 rs.getString("Cargo"),
-                rs.getInt("IdTipoEmpleado"),
                 rs.getString("TipoEmpleado"));
     }
 
     public boolean insertar(Empleado entidad) {
+        Connection conn = ConexionBD.getConexionCompartida();
+        if (conn == null) return false;
         try ( CallableStatement stmt = conn.prepareCall("CALL insertar_empleado(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");) {
-            stmt.setInt(1, entidad.getIdArea());
-            stmt.setInt(2, entidad.getIdCargo());
-            stmt.setInt(3, entidad.getIdTipoEmpleado());
+            // id 0 = sin elegir -> NULL ; fecha null -> NULL
+            stmt.setObject(1, entidad.getIdArea() == 0 ? null : entidad.getIdArea(), Types.INTEGER);
+            stmt.setObject(2, entidad.getIdTipoEmpleado() == 0 ? null : entidad.getIdTipoEmpleado(), Types.INTEGER);
+            stmt.setObject(3, entidad.getIdCargo() == 0 ? null : entidad.getIdCargo(), Types.INTEGER);
             stmt.setString(4, entidad.getApellidos());
             stmt.setString(5, entidad.getNombres());
-            stmt.setDate(6, entidad.getFechaNacimiento());
+            stmt.setObject(6, entidad.getFechaNacimiento(), Types.DATE);
             stmt.setString(7, entidad.getSexo());
             stmt.setString(8, entidad.getCorreo());
             stmt.setString(9, entidad.getDni());
@@ -82,6 +86,8 @@ public class DatosEmpleado {
     }
 
     public boolean eliminar(Integer idEmpleado) {
+        Connection conn = ConexionBD.getConexionCompartida();
+        if (conn == null) return false;
         try ( CallableStatement stmt = conn.prepareCall("CALL eliminar_empleados(?)");) {
             stmt.setInt(1, idEmpleado);
 
@@ -93,15 +99,17 @@ public class DatosEmpleado {
         return false;
     }
 
-    public boolean actualizar(Empleado entidad) {
+    public boolean actualizar(int empleadoId, Empleado entidad) {
+        Connection conn = ConexionBD.getConexionCompartida();
+        if (conn == null) return false;
         try ( CallableStatement stmt = conn.prepareCall("CALL actualizar_empleados(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");) {
-            stmt.setInt(1, entidad.getIdEmpleado());
-            stmt.setInt(2, entidad.getIdArea());
-            stmt.setInt(3, entidad.getIdCargo());
-            stmt.setInt(4, entidad.getIdTipoEmpleado());
+            stmt.setInt(1, empleadoId);
+            stmt.setObject(2, entidad.getIdArea() == 0 ? null : entidad.getIdArea(), Types.INTEGER);
+            stmt.setObject(3, entidad.getIdTipoEmpleado() == 0 ? null : entidad.getIdTipoEmpleado(), Types.INTEGER);
+            stmt.setObject(4, entidad.getIdCargo() == 0 ? null : entidad.getIdCargo(), Types.INTEGER);
             stmt.setString(5, entidad.getApellidos());
             stmt.setString(6, entidad.getNombres());
-            stmt.setDate(7, entidad.getFechaNacimiento());
+            stmt.setObject(7, entidad.getFechaNacimiento(), Types.DATE);
             stmt.setString(8, entidad.getSexo());
             stmt.setString(9, entidad.getCorreo());
             stmt.setString(10, entidad.getDni());

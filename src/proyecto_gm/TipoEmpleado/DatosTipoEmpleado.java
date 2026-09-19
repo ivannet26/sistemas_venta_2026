@@ -11,10 +11,10 @@ import principal.ConexionBD;
 
 public class DatosTipoEmpleado {
 
-    static final Connection conn = ConexionBD.getConnection();
-
     public static List<TipoEmpleado> listar() {
         List<TipoEmpleado> lista = new ArrayList<>();
+        Connection conn = ConexionBD.getConexionCompartida();
+        if (conn == null) return lista;
         try (CallableStatement stmt = conn.prepareCall("CALL listar_tipoempleado()");
              ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {

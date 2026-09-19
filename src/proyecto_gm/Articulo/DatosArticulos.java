@@ -12,8 +12,9 @@ public class DatosArticulos {
 
     public static List<Categoria> listarCategorias() {
         List<Categoria> lista = new ArrayList<>();
-        try (Connection conn = ConexionBD.getConnection();
-             CallableStatement cstmt = conn.prepareCall("{ CALL listar_categorias() }")) {
+        Connection conn = ConexionBD.getConexionCompartida();
+        if (conn == null) return lista;
+        try (CallableStatement cstmt = conn.prepareCall("{ CALL listar_categorias() }")) {
             ResultSet rs = cstmt.executeQuery();
             while (rs.next()) {
                 Categoria cat = new Categoria();
@@ -29,8 +30,9 @@ public class DatosArticulos {
     
     public static List<Marca> listarMarcas() {
         List<Marca> lista = new ArrayList<>();
-        try (Connection conn = ConexionBD.getConnection();
-             CallableStatement cstmt = conn.prepareCall("{ CALL listar_marcas() }")) {
+        Connection conn = ConexionBD.getConexionCompartida();
+        if (conn == null) return lista;
+        try (CallableStatement cstmt = conn.prepareCall("{ CALL listar_marcas() }")) {
             ResultSet rs = cstmt.executeQuery();
             while (rs.next()) {
                 Marca marca = new Marca();
@@ -46,8 +48,9 @@ public class DatosArticulos {
 
     public static List<Articulo> listar() {
         List<Articulo> lista = new ArrayList<>();
-        try (Connection conn = ConexionBD.getConnection();
-             CallableStatement cstmt = conn.prepareCall("{ CALL listar_articulos() }")) {
+        Connection conn = ConexionBD.getConexionCompartida();
+        if (conn == null) return lista;
+        try (CallableStatement cstmt = conn.prepareCall("{ CALL listar_articulos() }")) {
             ResultSet rs = cstmt.executeQuery();
             while (rs.next()) {
                 Articulo art = new Articulo();
@@ -77,8 +80,9 @@ public class DatosArticulos {
     }
     
     public static void insertar(Articulo art) {
-        try (Connection conn = ConexionBD.getConnection();
-             CallableStatement cstmt = conn.prepareCall("{ CALL insertar_articulos(?, ?, ?, ?, ?, ?) }")) {
+        Connection conn = ConexionBD.getConexionCompartida();
+        if (conn == null) return;
+        try (CallableStatement cstmt = conn.prepareCall("{ CALL insertar_articulos(?, ?, ?, ?, ?, ?) }")) {
             cstmt.setInt(1, 0); 
             cstmt.setInt(2, art.getCategoria().getId());
             cstmt.setInt(3, art.getMarca().getIdMarca());
@@ -94,8 +98,9 @@ public class DatosArticulos {
     }
     
     public static void actualizar(Articulo art) {
-        try (Connection conn = ConexionBD.getConnection();
-             CallableStatement cstmt = conn.prepareCall("{ CALL actualizar_articulos(?, ?, ?, ?, ?, ?) }")) {
+        Connection conn = ConexionBD.getConexionCompartida();
+        if (conn == null) return;
+        try (CallableStatement cstmt = conn.prepareCall("{ CALL actualizar_articulos(?, ?, ?, ?, ?, ?) }")) {
             cstmt.setInt(1, art.getId());
             cstmt.setInt(2, art.getCategoria().getId());
             cstmt.setInt(3, art.getMarca().getIdMarca());
@@ -110,8 +115,9 @@ public class DatosArticulos {
     }
     
     public static void eliminar(int id) {
-        try (Connection conn = ConexionBD.getConnection();
-             CallableStatement cstmt = conn.prepareCall("{ CALL eliminar_articulos(?) }")) {
+        Connection conn = ConexionBD.getConexionCompartida();
+        if (conn == null) return;
+        try (CallableStatement cstmt = conn.prepareCall("{ CALL eliminar_articulos(?) }")) {
             cstmt.setInt(1, id);
             cstmt.execute();
             JOptionPane.showMessageDialog(null, "Artículo eliminado.", "Eliminación Exitosa", JOptionPane.INFORMATION_MESSAGE);

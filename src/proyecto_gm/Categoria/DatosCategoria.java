@@ -10,11 +10,11 @@ import javax.swing.JOptionPane;
 import principal.ConexionBD;
 
 public class DatosCategoria {
-    
-    static final Connection conn = ConexionBD.getConnection();
 
     public static List<Categoria> listar() {
         List<Categoria> lista = new ArrayList<>();
+        Connection conn = ConexionBD.getConexionCompartida();
+        if (conn == null) return lista;
         
         try (CallableStatement cstmt = conn.prepareCall("{ CALL listar_categorias() }")) {
             
@@ -32,6 +32,8 @@ public class DatosCategoria {
     }
 
     public static void insertar(Categoria categoria) {
+        Connection conn = ConexionBD.getConexionCompartida();
+        if (conn == null) return;
         try (CallableStatement cstmt = conn.prepareCall("{ CALL insertar_categorias(?, ?) }")) { 
             
             cstmt.setString(1, categoria.getDescripcion());
@@ -49,6 +51,8 @@ public class DatosCategoria {
     }
 
     public static void actualizar(Categoria categoria) {
+        Connection conn = ConexionBD.getConexionCompartida();
+        if (conn == null) return;
         try (CallableStatement cstmt = conn.prepareCall("{ CALL actualizar_categorias(?, ?) }")) {
             
             cstmt.setInt(1, categoria.getId());
@@ -61,6 +65,8 @@ public class DatosCategoria {
     }
 
     public static void eliminar(int id) {
+        Connection conn = ConexionBD.getConexionCompartida();
+        if (conn == null) return;
         try (CallableStatement cstmt = conn.prepareCall("{ CALL eliminar_categorias(?) }")) {
             
             cstmt.setInt(1, id);

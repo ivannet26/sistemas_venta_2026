@@ -10,12 +10,12 @@ import java.util.List;
 import principal.ConexionBD;
 
 public class DatosCargo {
-    
-    static final Connection conn = ConexionBD.getConnection();
 
     public List<Cargo> listarCargo() throws SQLException {
         List<Cargo> lista = new ArrayList<>();
-        // Usamos try-with-resources para asegurar que la conexión y el statement se cierren
+        Connection conn = ConexionBD.getConexionCompartida();
+        if (conn == null) throw new SQLException("Sin conexión a BD");
+        // Usamos try-with-resources para asegurar que el statement se cierre (la conexión compartida NO se cierra)
         try (
            CallableStatement stmt = conn.prepareCall("{ CALL listar_cargos() }");
              ResultSet rs = stmt.executeQuery()
@@ -34,6 +34,8 @@ public class DatosCargo {
     }
 
     public boolean insertar(Cargo cargo) throws SQLException {
+        Connection conn = ConexionBD.getConexionCompartida();
+        if (conn == null) throw new SQLException("Sin conexión a BD");
         try (CallableStatement stmt = conn.prepareCall("{ CALL insertar_cargos(?, ?) }")) {
             
             stmt.setString(1, cargo.getDescripcion());
@@ -50,6 +52,8 @@ public class DatosCargo {
     }
 
     public boolean actualizar(Cargo cargo) throws SQLException {
+        Connection conn = ConexionBD.getConexionCompartida();
+        if (conn == null) throw new SQLException("Sin conexión a BD");
         try (CallableStatement stmt = conn.prepareCall("{ CALL actualizar_cargos(?, ?) }")) {
             
             stmt.setInt(1, cargo.getIdCargo());
@@ -61,6 +65,8 @@ public class DatosCargo {
     }
 
     public boolean eliminar(int idCargo) throws SQLException {
+        Connection conn = ConexionBD.getConexionCompartida();
+        if (conn == null) throw new SQLException("Sin conexión a BD");
         try (CallableStatement stmt = conn.prepareCall("{ CALL eliminar_cargos(?) }")) {
             
             stmt.setInt(1, idCargo);

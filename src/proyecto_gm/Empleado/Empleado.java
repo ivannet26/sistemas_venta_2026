@@ -20,6 +20,9 @@ public class Empleado {
     private String estado;
     private String anio;
     private String mes;
+    private String area;
+    private String cargo;
+    private String tipoEmpleado;
 
     public Empleado() {
     }
@@ -40,7 +43,10 @@ public class Empleado {
             String direccion,
             String estado,
             String anio,
-            String mes) {
+            String mes,
+            String area,
+            String cargo,
+            String tipoEmpleado) {
         this.idEmpleado = idEmpleado;
         this.idArea = idArea;
         this.idTipoEmpleado = idTipoEmpleado;
@@ -57,6 +63,9 @@ public class Empleado {
         this.estado = estado;
         this.anio = anio;
         this.mes = mes;
+        this.area = area;
+        this.cargo = cargo;
+        this.tipoEmpleado = tipoEmpleado;
     }
 
     public int getIdEmpleado() {
@@ -185,6 +194,30 @@ public class Empleado {
 
     public void setMes(String mes) {
         this.mes = mes;
+    }
+
+    public String getArea() {
+        return area;
+    }
+
+    public void setArea(String area) {
+        this.area = area;
+    }
+
+    public String getCargo() {
+        return cargo;
+    }
+
+    public void setCargo(String cargo) {
+        this.cargo = cargo;
+    }
+
+    public String getTipoEmpleado() {
+        return tipoEmpleado;
+    }
+
+    public void setTipoEmpleado(String tipoEmpleado) {
+        this.tipoEmpleado = tipoEmpleado;
     }
 
     @Override

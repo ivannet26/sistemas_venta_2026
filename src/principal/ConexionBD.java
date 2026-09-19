@@ -9,32 +9,40 @@ public class ConexionBD {
     public static String codPerfil = "";
     public static String nomPerfil = "";
     public static String nomUsuario = "";
+    private static Connection conexionCompartida;
 
     public ConexionBD() {
-        // Evitar instanciación
+        // Evitar instanciación 
     }
 
-    private static String getUrlDinamica(String baseDatos) {
-        String host = System.getenv("DB_HOST");
-        String puerto = System.getenv().getOrDefault("DB_PORT", "3306");
+    private static String obtenerUrl(String baseDatos) {
+        String host = "";
+        String puerto = "";
 
         return "jdbc:mysql://" + host + ":" + puerto + "/" + baseDatos
                 + "?useSSL=true&requireSSL=true&allowPublicKeyRetrieval=true";
     }
 
+    public static synchronized Connection getConexionCompartida() {
+        try {
+            if (conexionCompartida != null && !conexionCompartida.isClosed() && conexionCompartida.isValid(2)) {
+                return conexionCompartida;
+            }
+        } catch (SQLException e) {
+            // cae a reabrir
+        }
+        conexionCompartida = getConnection();
+        return conexionCompartida;
+    }
+
     public static Connection getConnection() {
         try {
-            String user = System.getenv("DB_USER");
-            String pass = System.getenv("DB_PASSWORD");
-            String db = "dbventa";
+            String user = "";
+            String pass = "";
+            String db = "";
 
             Class.forName("com.mysql.cj.jdbc.Driver");
-            return DriverManager.getConnection(
-                    getUrlDinamica(db),
-                    user,
-                    pass
-            );
-
+            return DriverManager.getConnection(obtenerUrl(db), user, pass);
         } catch (ClassNotFoundException | SQLException e) {
             System.err.println("Error en la conexión: " + e.getMessage());
             return null;
@@ -48,11 +56,7 @@ public class ConexionBD {
             String dbReloj = "gmadministracion";
 
             Class.forName("com.mysql.cj.jdbc.Driver");
-            return DriverManager.getConnection(
-                    getUrlDinamica(dbReloj),
-                    user,
-                    pass
-            );
+            return DriverManager.getConnection(obtenerUrl(dbReloj), user, pass);
 
         } catch (ClassNotFoundException | SQLException ex) {
             System.err.println("Error en la conexión: " + ex.getMessage());

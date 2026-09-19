@@ -1,5 +1,6 @@
 package proyecto_gm.Empleado;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JDesktopPane;
@@ -20,14 +21,13 @@ public class frmListaEmpleado extends javax.swing.JInternalFrame {
             return false;
         }
     };
+    private List<Empleado> listaEmpleados = new ArrayList<>();
 
     public frmListaEmpleado() {
         initComponents();
         cargarComboBox();
         cargarDatos();
-        // Enter en el campo de búsqueda filtra. No agregar listeners a
-        // btnBuscar/btnRefrescar aquí: ya están conectados en initComponents
-        // y duplicarlos ejecuta cargarDatos() dos veces (filas duplicadas).
+        // Listener en el campo de búsqueda filtrar.
         txtBuscar.addActionListener(e -> cargarDatos());
     }
 
@@ -48,7 +48,7 @@ public class frmListaEmpleado extends javax.swing.JInternalFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tblEmpleados = new javax.swing.JTable();
         jPanel2 = new javax.swing.JPanel();
-        btnCancelar = new javax.swing.JButton();
+        btnEliminar = new javax.swing.JButton();
         btnAgregar = new javax.swing.JButton();
         btnEditar = new javax.swing.JButton();
         btnRefrescar = new javax.swing.JButton();
@@ -117,7 +117,7 @@ public class frmListaEmpleado extends javax.swing.JInternalFrame {
                         .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(lblEstado)
                         .addComponent(cmbEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(10, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         tblEmpleados.setModel(new javax.swing.table.DefaultTableModel(
@@ -138,15 +138,15 @@ public class frmListaEmpleado extends javax.swing.JInternalFrame {
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
-        btnCancelar.setBackground(new java.awt.Color(242, 242, 242));
-        btnCancelar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/eliminar.png"))); // NOI18N
-        btnCancelar.setAlignmentX(0.5F);
-        btnCancelar.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        btnCancelar.setMargin(new java.awt.Insets(0, 0, 0, 0));
-        btnCancelar.setVerticalAlignment(javax.swing.SwingConstants.TOP);
-        btnCancelar.addActionListener(new java.awt.event.ActionListener() {
+        btnEliminar.setBackground(new java.awt.Color(242, 242, 242));
+        btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/eliminar.png"))); // NOI18N
+        btnEliminar.setAlignmentX(0.5F);
+        btnEliminar.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        btnEliminar.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        btnEliminar.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        btnEliminar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCancelarActionPerformed(evt);
+                btnEliminarActionPerformed(evt);
             }
         });
 
@@ -166,6 +166,11 @@ public class frmListaEmpleado extends javax.swing.JInternalFrame {
         btnEditar.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         btnEditar.setMargin(new java.awt.Insets(0, 0, 0, 0));
         btnEditar.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        btnEditar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditarActionPerformed(evt);
+            }
+        });
 
         btnRefrescar.setBackground(new java.awt.Color(242, 242, 242));
         btnRefrescar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/icons8-refrescar-20.png"))); // NOI18N
@@ -184,13 +189,13 @@ public class frmListaEmpleado extends javax.swing.JInternalFrame {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(20, 20, 20)
+                .addContainerGap()
                 .addComponent(btnAgregar)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnCancelar)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnEliminar)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnEditar)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnRefrescar)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -201,7 +206,7 @@ public class frmListaEmpleado extends javax.swing.JInternalFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnRefrescar)
                     .addComponent(btnEditar)
-                    .addComponent(btnCancelar)
+                    .addComponent(btnEliminar)
                     .addComponent(btnAgregar))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -212,11 +217,11 @@ public class frmListaEmpleado extends javax.swing.JInternalFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
-                .addGap(20, 20, 20)
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jScrollPane1)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -224,9 +229,9 @@ public class frmListaEmpleado extends javax.swing.JInternalFrame {
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(3, 3, 3)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -245,13 +250,19 @@ public class frmListaEmpleado extends javax.swing.JInternalFrame {
         }
 
         frmEmpleado formEmpleado = new frmEmpleado();
+        formEmpleado.addInternalFrameListener(new javax.swing.event.InternalFrameAdapter() {
+            @Override
+            public void internalFrameClosed(javax.swing.event.InternalFrameEvent e) {
+                cargarDatos();
+            }
+        });
         desktopPane.add(formEmpleado);
         formEmpleado.setVisible(true);
         formEmpleado.toFront();
 
     }//GEN-LAST:event_btnAgregarActionPerformed
 
-    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
+    private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
         int fila = tblEmpleados.getSelectedRow();
 
         if (fila == -1) {
@@ -282,7 +293,7 @@ public class frmListaEmpleado extends javax.swing.JInternalFrame {
             }
         }
 
-    }//GEN-LAST:event_btnCancelarActionPerformed
+    }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void btnRefrescarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefrescarActionPerformed
         limpiarFiltros();
@@ -290,18 +301,47 @@ public class frmListaEmpleado extends javax.swing.JInternalFrame {
         JOptionPane.showMessageDialog(this, "Tabla actualizada correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_btnRefrescarActionPerformed
 
+    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
+        JDesktopPane desktopPane = getDesktopPane();
+
+        if (desktopPane == null) {
+            JOptionPane.showMessageDialog(this, "No se encontró el contenedor principal (JDesktopPane).", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        int fila = tblEmpleados.getSelectedRow();
+
+        if (fila == -1) {
+            JOptionPane.showMessageDialog(this, "Debe seleccionar una fila para eliminar.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        Empleado empleado = listaEmpleados.get(fila);
+        frmEmpleado formEmpleado = new frmEmpleado();
+        formEmpleado.addInternalFrameListener(new javax.swing.event.InternalFrameAdapter() {
+            @Override
+            public void internalFrameClosed(javax.swing.event.InternalFrameEvent e) {
+                cargarDatos();
+            }
+        });
+        formEmpleado.cargarDatos(empleado);
+        desktopPane.add(formEmpleado);
+        formEmpleado.setVisible(true);
+        formEmpleado.toFront();
+    }//GEN-LAST:event_btnEditarActionPerformed
+
     private void cargarDatos() {
         modelo.setRowCount(0);
         Object areaSel = cmbArea.getSelectedItem();
         Object tipoSel = cmbTipoEmpleado.getSelectedItem();
+        Object estadoSel = cmbEstado.getSelectedItem();
 
-        List<EmpleadoDTO> empleados = datosEmpleado.listar(
+        listaEmpleados = datosEmpleado.listar(
                 txtBuscar.getText(),
-                (String) cmbEstado.getSelectedItem(),
-                ((Area) areaSel).getIdArea(),
-                ((TipoEmpleado) tipoSel).getIdTipoEmpleado());
+                (estadoSel instanceof String) ? (String) estadoSel : "T",
+                (areaSel instanceof Area) ? ((Area) areaSel).getIdArea() : 0,
+                (tipoSel instanceof TipoEmpleado) ? ((TipoEmpleado) tipoSel).getIdTipoEmpleado() : 0);
 
-        for (EmpleadoDTO e : empleados) {
+        for (Empleado e : listaEmpleados) {
             modelo.addRow(new Object[]{
                 e.getIdEmpleado(),
                 e.getApellidos(),
@@ -350,8 +390,8 @@ public class frmListaEmpleado extends javax.swing.JInternalFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAgregar;
     private javax.swing.JButton btnBuscar;
-    private javax.swing.JButton btnCancelar;
     private javax.swing.JButton btnEditar;
+    private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnRefrescar;
     private javax.swing.JComboBox<Area> cmbArea;
     private javax.swing.JComboBox<String> cmbEstado;

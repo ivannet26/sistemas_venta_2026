@@ -11,10 +11,10 @@ import principal.ConexionBD;
 
 public class DatosArea {
 
-    static final Connection conn = ConexionBD.getConnection();
-    
     public static List<Area> listar() {
         List<Area> listaAreas = new ArrayList<>();
+        Connection conn = ConexionBD.getConexionCompartida();
+        if (conn == null) return listaAreas;
         
             try (CallableStatement stmt = conn.prepareCall("CALL listar_areas()"); 
                  ResultSet rs = stmt.executeQuery()) {
@@ -31,6 +31,8 @@ public class DatosArea {
 
     public static boolean insertar(Area area) {
         boolean exito = false;
+        Connection conn = ConexionBD.getConexionCompartida();
+        if (conn == null) return false;
             try (CallableStatement stmt = conn.prepareCall("{CALL insertar_areas(?)}")) {
                 stmt.setString(1, area.getDescripcionArea());
                 if (stmt.executeUpdate() > 0) exito = true;
@@ -43,6 +45,8 @@ public class DatosArea {
 
     public static boolean actualizar(Area area) {
         boolean exito = false;
+        Connection conn = ConexionBD.getConexionCompartida();
+        if (conn == null) return false;
             try (CallableStatement stmt = conn.prepareCall("{CALL actualizar_areas(?, ?)}")) {
                 stmt.setInt(1, area.getIdArea());
                 stmt.setString(2, area.getDescripcionArea());
@@ -56,6 +60,8 @@ public class DatosArea {
 
     public static boolean eliminar(int idArea) {
         boolean exito = false;
+        Connection conn = ConexionBD.getConexionCompartida();
+        if (conn == null) return false;
             try (CallableStatement stmt = conn.prepareCall("{CALL eliminar_areas(?)}")) {
                 stmt.setInt(1, idArea);
                 stmt.execute();

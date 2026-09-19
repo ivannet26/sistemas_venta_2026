@@ -24,9 +24,10 @@ public class DatosGuiaRemision {
     public static List<GuiaRemision> listar(long idGuia) {
         List<GuiaRemision> listaEntidad = new ArrayList<>();
 
-        try (Connection conn = ConexionBD.getConnection();
-             CallableStatement cstmt
-                     = conn.prepareCall("{ CALL sp_obtener_guiaremision(?) }")) {
+        Connection conn = ConexionBD.getConexionCompartida();
+        if (conn == null) return listaEntidad;
+        try (CallableStatement cstmt
+                      = conn.prepareCall("{ CALL sp_obtener_guiaremision(?) }")) {
 
             cstmt.setLong(1, idGuia);
 
@@ -105,8 +106,12 @@ public class DatosGuiaRemision {
                 + "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
                 + "?, ?, ?, ?, ?, ?) }";
 
-        try (Connection conn = ConexionBD.getConnection();
-             CallableStatement cstmt = conn.prepareCall(procedimiento)) {
+        Connection conn = ConexionBD.getConexionCompartida();
+        if (conn == null) {
+            mostrarError("Error al registrar la guía de remisión", new SQLException("Sin conexión a BD"));
+            return false;
+        }
+        try (CallableStatement cstmt = conn.prepareCall(procedimiento)) {
 
             cstmt.setInt(1, guia.getIdEmpresa());
             setLongNulo(cstmt, 2, guia.getIdComprobante());
@@ -155,10 +160,11 @@ public class DatosGuiaRemision {
     }
 
     public static boolean despachar(long idGuia, int idUsuario) {
-        try (Connection conn = ConexionBD.getConnection();
-             CallableStatement cstmt = conn.prepareCall(
-                     "{ CALL sp_despachar_guiaremision(?, ?) }"
-             )) {
+        Connection conn = ConexionBD.getConexionCompartida();
+        if (conn == null) return false;
+        try (CallableStatement cstmt = conn.prepareCall(
+                      "{ CALL sp_despachar_guiaremision(?, ?) }"
+              )) {
 
             cstmt.setLong(1, idGuia);
             cstmt.setInt(2, idUsuario);
@@ -187,10 +193,11 @@ public class DatosGuiaRemision {
             String receptorDocumento,
             String observaciones) {
 
-        try (Connection conn = ConexionBD.getConnection();
-             CallableStatement cstmt = conn.prepareCall(
-                     "{ CALL sp_registrar_entregaguia(?, ?, ?, ?, ?, ?) }"
-             )) {
+        Connection conn = ConexionBD.getConexionCompartida();
+        if (conn == null) return false;
+        try (CallableStatement cstmt = conn.prepareCall(
+                      "{ CALL sp_registrar_entregaguia(?, ?, ?, ?, ?, ?) }"
+              )) {
 
             cstmt.setLong(1, idGuia);
             cstmt.setInt(2, idUsuario);
@@ -221,10 +228,11 @@ public class DatosGuiaRemision {
             int idUsuario,
             String motivo) {
 
-        try (Connection conn = ConexionBD.getConnection();
-             CallableStatement cstmt = conn.prepareCall(
-                     "{ CALL sp_anular_guiaremision(?, ?, ?) }"
-             )) {
+        Connection conn = ConexionBD.getConexionCompartida();
+        if (conn == null) return false;
+        try (CallableStatement cstmt = conn.prepareCall(
+                      "{ CALL sp_anular_guiaremision(?, ?, ?) }"
+              )) {
 
             cstmt.setLong(1, idGuia);
             cstmt.setInt(2, idUsuario);
