@@ -14,11 +14,12 @@ public class DatosCategoria {
     public static List<Categoria> listar() {
         List<Categoria> lista = new ArrayList<>();
         Connection conn = ConexionBD.getConexionCompartida();
-        if (conn == null) return lista;
-        
-        try (CallableStatement cstmt = conn.prepareCall("{ CALL listar_categorias() }")) {
-            
-            ResultSet rs = cstmt.executeQuery();
+        if (conn == null) {
+            return lista;
+        }
+
+        try ( CallableStatement cstmt = conn.prepareCall("{ CALL listar_categorias() }");  ResultSet rs = cstmt.executeQuery()) {
+
             while (rs.next()) {
                 Categoria categoria = new Categoria();
                 categoria.setId(rs.getInt("IdCategoria"));
@@ -31,49 +32,64 @@ public class DatosCategoria {
         return lista;
     }
 
-    public static void insertar(Categoria categoria) {
+    public static boolean insertar(Categoria categoria) {
         Connection conn = ConexionBD.getConexionCompartida();
-        if (conn == null) return;
-        try (CallableStatement cstmt = conn.prepareCall("{ CALL insertar_categorias(?, ?) }")) { 
-            
+        if (conn == null) {
+            return false;
+        }
+
+        try ( CallableStatement cstmt = conn.prepareCall("{ CALL insertar_categorias(?, ?) }")) {
             cstmt.setString(1, categoria.getDescripcion());
             cstmt.registerOutParameter(2, java.sql.Types.INTEGER);
-            
-            cstmt.execute();
-            
-            int idGenerado = cstmt.getInt(2);
-            categoria.setId(idGenerado);
-            
-            JOptionPane.showMessageDialog(null, "Categoría registrada exitosamente.", "Registro Exitoso", JOptionPane.INFORMATION_MESSAGE);
+
+            if (cstmt.executeUpdate() > 0) {
+                int idGenerado = cstmt.getInt(2);
+                categoria.setId(idGenerado);
+                JOptionPane.showMessageDialog(null, "Categoría registrada exitosamente.", "Registro Exitoso", JOptionPane.INFORMATION_MESSAGE);
+                return true;
+            }
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "Error al insertar categoría: " + ex.getMessage(), "Error de Base de Datos", JOptionPane.ERROR_MESSAGE);
         }
+        return false;
     }
 
-    public static void actualizar(Categoria categoria) {
+    public static boolean actualizar(Categoria categoria) {
         Connection conn = ConexionBD.getConexionCompartida();
-        if (conn == null) return;
-        try (CallableStatement cstmt = conn.prepareCall("{ CALL actualizar_categorias(?, ?) }")) {
-            
+        if (conn == null) {
+            return false;
+        }
+
+        try ( CallableStatement cstmt = conn.prepareCall("{ CALL actualizar_categorias(?, ?) }")) {
             cstmt.setInt(1, categoria.getId());
             cstmt.setString(2, categoria.getDescripcion());
-            cstmt.execute();
-            JOptionPane.showMessageDialog(null, "Categoría actualizada exitosamente.", "Actualización Exitosa", JOptionPane.INFORMATION_MESSAGE);
+
+            if (cstmt.executeUpdate() > 0) {
+                JOptionPane.showMessageDialog(null, "Categoría actualizada exitosamente.", "Actualización Exitosa", JOptionPane.INFORMATION_MESSAGE);
+                return true;
+            }
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "Error al actualizar categoría: " + ex.getMessage(), "Error de Base de Datos", JOptionPane.ERROR_MESSAGE);
         }
+        return false;
     }
 
-    public static void eliminar(int id) {
+    public static boolean eliminar(int id) {
         Connection conn = ConexionBD.getConexionCompartida();
-        if (conn == null) return;
-        try (CallableStatement cstmt = conn.prepareCall("{ CALL eliminar_categorias(?) }")) {
-            
+        if (conn == null) {
+            return false;
+        }
+
+        try ( CallableStatement cstmt = conn.prepareCall("{ CALL eliminar_categorias(?) }")) {
             cstmt.setInt(1, id);
-            cstmt.execute();
-            JOptionPane.showMessageDialog(null, "Categoría eliminada exitosamente.", "Eliminación Exitosa", JOptionPane.INFORMATION_MESSAGE);
+
+            if (cstmt.executeUpdate() > 0) {
+                JOptionPane.showMessageDialog(null, "Categoría eliminada exitosamente.", "Eliminación Exitosa", JOptionPane.INFORMATION_MESSAGE);
+                return true;
+            }
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(null, "Error al eliminar categoría: " + ex.getMessage(), "Error de Base de Datos", JOptionPane.ERROR_MESSAGE);
         }
+        return false;
     }
 }

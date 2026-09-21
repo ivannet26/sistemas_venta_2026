@@ -1,5 +1,6 @@
 package proyecto_gm.Articulo;
 
+import proyecto_gm.Marca.Marca;
 import proyecto_gm.Categoria.Categoria;
 
 public class Articulo {

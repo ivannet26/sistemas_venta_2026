@@ -1,9 +1,12 @@
 package proyecto_gm.Articulo;
 
+import proyecto_gm.Marca.Marca;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import proyecto_gm.Categoria.Categoria;
+import proyecto_gm.Categoria.DatosCategoria;
+import proyecto_gm.Marca.DatosMarcas;
 
 public class frmArticulo extends javax.swing.JInternalFrame {
 
@@ -30,11 +33,11 @@ public class frmArticulo extends javax.swing.JInternalFrame {
     
     private void cargarCombos() {
         // Cargar Categorías
-        List<Categoria> categorias = DatosArticulos.listarCategorias();
+        List<Categoria> categorias = DatosCategoria.listar();
         cmbCategoria.setModel(new DefaultComboBoxModel<>(categorias.toArray(new Categoria[0])));
         
         // Cargar Marcas
-        List<Marca> marcas = DatosArticulos.listarMarcas();
+        List<Marca> marcas = DatosMarcas.listar();
         cboMarca.setModel(new DefaultComboBoxModel<>(marcas.toArray(new Marca[0])));
     }
     

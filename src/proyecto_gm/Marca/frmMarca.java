@@ -1,29 +1,35 @@
-package proyecto_gm.Categoria;
+package proyecto_gm.Marca;
 
-import java.awt.Toolkit;
 import java.io.IOException;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import principal.Exportar;
 
-public class frmCategoria extends javax.swing.JInternalFrame {
+public class frmMarca extends javax.swing.JInternalFrame {
 
-    private static frmCategoria instancia;
-    boolean esNuevo = false;
+    private static frmMarca instancia;
     DefaultTableModel modelo;
-    List<Categoria> listaCategorias;
+    boolean esNuevo = false;
+    List<Marca> listaMarcas;
 
-    public frmCategoria() {
+    public frmMarca() {
         initComponents();
-        modelo = (DefaultTableModel) tblCategoria.getModel();
-        cargarDatos();
-        gestionarControles(false);
+        setTitle("MARCA");
+        modelo = new DefaultTableModel(null, new String[]{"ID", "DESCRIPCIÓN"}) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        jTable1.setModel(modelo);
+        cargarTabla();
+        configurarEstadoInicial();
     }
 
-    public static frmCategoria getInstancia() {
+    public static frmMarca getInstancia() {
         if (instancia == null) {
-            instancia = new frmCategoria();
+            instancia = new frmMarca();
         }
         return instancia;
     }
@@ -34,43 +40,37 @@ public class frmCategoria extends javax.swing.JInternalFrame {
         instancia = null;
     }
 
-    private void cargarDatos() {
-        try {
-
-            listaCategorias = DatosCategoria.listar();
-
-            Object[][] matrizDatos = new Object[listaCategorias.size()][2];
-
-            for (int i = 0; i < listaCategorias.size(); i++) {
-                Categoria cat = listaCategorias.get(i);
-                matrizDatos[i][0] = cat.getId();
-                matrizDatos[i][1] = cat.getDescripcion();
-            }
-
-            String[] columnas = {"ID", "DESCRIPCIÓN"};
-
-            modelo.setDataVector(matrizDatos, columnas);
-
-        } catch (Exception e) {
-            System.out.println("Error cargando categorías: " + e.getMessage());
-            JOptionPane.showMessageDialog(this, "Error al cargar los datos: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+    private void cargarTabla() {
+        modelo.setRowCount(0);
+        listaMarcas = DatosMarcas.listar();
+        for (Marca marca : listaMarcas) {
+            modelo.addRow(new Object[]{marca.getIdMarca(), marca.getDescripcion()});
         }
     }
 
-    private void gestionarControles(boolean activo) {
-        txtCodigo.setEnabled(false);
-        txtDescripcion.setEnabled(activo);
+    private void configurarEstadoInicial() {
+        txtId.setEnabled(false);
+        txtDescripcion.setEnabled(false);
+        btnAgregar.setEnabled(true);
+        btnEditar.setEnabled(true);
+        btnEliminar.setEnabled(true);
+        btnGuardar.setEnabled(false);
+        btnDeshacer.setEnabled(false);
+        limpiarCampos();
+    }
 
-        btnGuardar.setEnabled(activo);
-        btnDeshacer.setEnabled(activo);
-
-        btnAgregar.setEnabled(!activo);
-        btnEditar.setEnabled(!activo);
-        btnEliminar.setEnabled(!activo);
+    private void configurarEstadoFormulario() {
+        txtId.setEnabled(false);
+        txtDescripcion.setEnabled(true);
+        btnAgregar.setEnabled(false);
+        btnEditar.setEnabled(false);
+        btnEliminar.setEnabled(false);
+        btnGuardar.setEnabled(true);
+        btnDeshacer.setEnabled(true);
     }
 
     private void limpiarCampos() {
-        txtCodigo.setText("");
+        txtId.setText("");
         txtDescripcion.setText("");
     }
 
@@ -78,7 +78,12 @@ public class frmCategoria extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        escritorio = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+        txtId = new javax.swing.JTextField();
+        txtDescripcion = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
         jToolBar1 = new javax.swing.JToolBar();
         jSeparator1 = new javax.swing.JToolBar.Separator();
         btnAgregar = new javax.swing.JButton();
@@ -87,28 +92,27 @@ public class frmCategoria extends javax.swing.JInternalFrame {
         btnGuardar = new javax.swing.JButton();
         btnDeshacer = new javax.swing.JButton();
         btnExportar = new javax.swing.JButton();
-        txtCodigo = new javax.swing.JTextField();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        txtDescripcion = new javax.swing.JTextField();
-        tblScroll = new javax.swing.JScrollPane();
-        tblCategoria = new javax.swing.JTable();
 
-        setClosable(true);
-        setIconifiable(true);
-        setTitle("CATEGORIA");
-        setToolTipText("");
+        setTitle("MARCA");
 
-        javax.swing.GroupLayout escritorioLayout = new javax.swing.GroupLayout(escritorio);
-        escritorio.setLayout(escritorioLayout);
-        escritorioLayout.setHorizontalGroup(
-            escritorioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        escritorioLayout.setVerticalGroup(
-            escritorioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
+        jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null}
+            },
+            new String [] {
+                "ID", "Descripción"
+            }
+        ));
+        jScrollPane1.setViewportView(jTable1);
+
+        jLabel1.setText("ID:");
+
+        jLabel2.setText("Descripción:");
 
         jToolBar1.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
         jToolBar1.setRollover(true);
@@ -192,77 +196,39 @@ public class frmCategoria extends javax.swing.JInternalFrame {
         });
         jToolBar1.add(btnExportar);
 
-        jLabel1.setText("ID:");
-
-        jLabel2.setText("Descripcion:");
-
-        txtDescripcion.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtDescripcionActionPerformed(evt);
-            }
-        });
-        txtDescripcion.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent evt) {
-                txtDescripcionKeyTyped(evt);
-            }
-        });
-
-        tblScroll.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-
-        tblCategoria.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "ID", "Descripción"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        tblScroll.setViewportView(tblCategoria);
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtDescripcion))
-                    .addComponent(tblScroll)
-                    .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(escritorio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 452, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(escritorio, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(txtCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtDescripcion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2)
-                    .addComponent(txtDescripcion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel1)
+                    .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tblScroll, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         pack();
@@ -271,100 +237,76 @@ public class frmCategoria extends javax.swing.JInternalFrame {
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
         esNuevo = true;
         limpiarCampos();
-        gestionarControles(true);
-        setTitle("Nueva Categoría");
+        configurarEstadoFormulario();
+        setTitle("NUEVA MARCA");
         txtDescripcion.requestFocus();
     }//GEN-LAST:event_btnAgregarActionPerformed
 
     private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
-        int fila = tblCategoria.getSelectedRow();
-        if (fila >= 0) {
-            esNuevo = false;
-            Categoria catSeleccionada = listaCategorias.get(fila);
-
-            txtCodigo.setText(String.valueOf(catSeleccionada.getId()));
-            txtDescripcion.setText(catSeleccionada.getDescripcion());
-
-            gestionarControles(true);
-            setTitle("Editar Categoría");
-            txtDescripcion.requestFocus();
-        } else {
+        int fila = jTable1.getSelectedRow();
+        if (fila < 0) {
             JOptionPane.showMessageDialog(this, "Debe seleccionar una fila para editar.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+            return;
         }
+        esNuevo = false;
+        txtId.setText(jTable1.getValueAt(fila, 0).toString());
+        txtDescripcion.setText(jTable1.getValueAt(fila, 1).toString());
+        configurarEstadoFormulario();
+        setTitle("EDITAR MARCA");
+        txtDescripcion.requestFocus();
     }//GEN-LAST:event_btnEditarActionPerformed
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
-        int fila = tblCategoria.getSelectedRow();
-        if (fila >= 0) {
-            Object[] opciones = {"Sí", "No"};
-            int confirmacion = JOptionPane.showOptionDialog(
-                    this,
-                    "¿Está seguro de eliminar esta categoría?",
-                    "Confirmar Eliminación",
-                    JOptionPane.YES_NO_OPTION,
-                    JOptionPane.QUESTION_MESSAGE,
-                    null,
-                    opciones,
-                    opciones[0]
-            );
-
-            if (confirmacion == 0) {
-                int idCategoria = (int) tblCategoria.getValueAt(fila, 0);
-                DatosCategoria.eliminar(idCategoria);
-                cargarDatos();
-            }
-        } else {
+        int fila = jTable1.getSelectedRow();
+        if (fila < 0) {
             JOptionPane.showMessageDialog(this, "Debe seleccionar una fila para eliminar.", "Advertencia", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        int id = Integer.parseInt(jTable1.getValueAt(fila, 0).toString());
+        Object[] opciones = {"Sí", "No"};
+        int confirm = JOptionPane.showOptionDialog(this, "¿Está seguro de eliminar esta marca?", "Confirmación", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, opciones, opciones[0]);
+        if (confirm == 0) {
+            DatosMarcas.eliminar(id);
+            cargarTabla();
+            configurarEstadoInicial();
         }
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         if (txtDescripcion.getText().trim().isEmpty()) {
             JOptionPane.showMessageDialog(this, "El campo descripción es obligatorio.", "Validación", JOptionPane.WARNING_MESSAGE);
+            txtDescripcion.requestFocus();
             return;
         }
-
-        Categoria categoria = new Categoria();
-        categoria.setDescripcion(txtDescripcion.getText().trim());
-
+        Marca marca = new Marca();
+        marca.setDescripcion(txtDescripcion.getText().trim());
         if (esNuevo) {
-            DatosCategoria.insertar(categoria);
+            DatosMarcas.insertar(marca);
         } else {
-            categoria.setId(Integer.parseInt(txtCodigo.getText()));
-            DatosCategoria.actualizar(categoria);
+            marca.setIdMarca(Integer.parseInt(txtId.getText()));
+            DatosMarcas.actualizar(marca);
         }
-
-        cargarDatos();
+        cargarTabla();
         limpiarCampos();
-        gestionarControles(false);
-        setTitle("CATEGORIA");
+        configurarEstadoInicial();
+        setTitle("MARCA");
     }//GEN-LAST:event_btnGuardarActionPerformed
+
+    private void btnDeshacerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeshacerActionPerformed
+        limpiarCampos();
+        configurarEstadoInicial();
+        setTitle("MARCA");
+    }//GEN-LAST:event_btnDeshacerActionPerformed
 
     private void btnExportarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportarActionPerformed
         try {
             Exportar obj = new Exportar();
-            obj.exportarExcel(tblCategoria);
+            obj.exportarExcel(jTable1);
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(this, "Error al exportar el archivo: " + ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnExportarActionPerformed
 
-    private void btnDeshacerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeshacerActionPerformed
-        limpiarCampos();
-        gestionarControles(false);
-        setTitle("CATEGORIA");
-    }//GEN-LAST:event_btnDeshacerActionPerformed
-
-    private void txtDescripcionKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtDescripcionKeyTyped
-        if (txtDescripcion.getText().length() >= 100) {
-            evt.consume();
-            Toolkit.getDefaultToolkit().beep();
-        }
-    }//GEN-LAST:event_txtDescripcionKeyTyped
-
-    private void txtDescripcionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDescripcionActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtDescripcionActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAgregar;
@@ -373,14 +315,13 @@ public class frmCategoria extends javax.swing.JInternalFrame {
     private javax.swing.JButton btnEliminar;
     private javax.swing.JButton btnExportar;
     private javax.swing.JButton btnGuardar;
-    private javax.swing.JPanel escritorio;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JToolBar.Separator jSeparator1;
+    private javax.swing.JTable jTable1;
     private javax.swing.JToolBar jToolBar1;
-    private javax.swing.JTable tblCategoria;
-    private javax.swing.JScrollPane tblScroll;
-    private javax.swing.JTextField txtCodigo;
     private javax.swing.JTextField txtDescripcion;
+    private javax.swing.JTextField txtId;
     // End of variables declaration//GEN-END:variables
 }
