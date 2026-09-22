@@ -16,8 +16,8 @@ public class ConexionBD {
     }
 
     private static String obtenerUrl(String baseDatos) {
-        String host = "mysql-2488cd51-iatanacio-db42.h.aivencloud.com";
-        String puerto = "17476";
+        String host = "";
+        String puerto = "";
 
         return "jdbc:mysql://" + host + ":" + puerto + "/" + baseDatos
                 + "?useSSL=true&requireSSL=true&allowPublicKeyRetrieval=true";
@@ -37,9 +37,8 @@ public class ConexionBD {
 
     public static Connection getConnection() {
         try {
-            // ponytail: credenciales por entorno, nunca hardcodeadas (push protection GH013 las bloquea)
-            String user = System.getenv("DB_USER") != null ? System.getenv("DB_USER") : "avnadmin";
-            String pass = System.getenv("DB_PASSWORD") != null ? System.getenv("DB_PASSWORD") : "";
+            String user = "";
+            String pass = "";
             String db = "dbventa";
 
             Class.forName("com.mysql.cj.jdbc.Driver");

@@ -30,8 +30,7 @@ import proyecto_gm.Categoria.frmCategoria;
 //import proyecto_gm.credencial.frmCredencial;
 import java.sql.CallableStatement;
 import java.sql.ResultSet;
-import proyecto_gm.Empleado.Empleado;
-import proyecto_gm.Empleado.frmEmpleado;
+import proyecto_gm.Cliente.frmCliente;
 import proyecto_gm.Empleado.frmListaEmpleado;
 //import proyecto_gm.Area.frmArea;
 //import proyecto_gm.Cargo.frmCargo;
@@ -121,6 +120,8 @@ public class menu extends javax.swing.JFrame {
         this.subMenuUsuario.setVisible(false);
         this.subMenuPermisosxPerfil.setVisible(false);
         this.subMenuPerfil.setVisible(false);
+        this.subMenuArchivos.setVisible(false);
+        this.subReportes.setVisible(false);
 
     }
 
@@ -302,8 +303,15 @@ public class menu extends javax.swing.JFrame {
             case "subMenuPerfil":
                 this.subMenuPerfil.setVisible(true);
                 break;
+            case "subMenuArchivos":
+                this.subMenuArchivos.setVisible(true);
+                break;
+            case "subReportes":
+                this.subReportes.setVisible(true);
+                break;
             default:
-                throw new AssertionError();
+                System.err.println("Menú no reconocido: " + nombreMenu);
+                break;
         }
     }
 
@@ -1354,7 +1362,7 @@ public class menu extends javax.swing.JFrame {
     }//GEN-LAST:event_subMenuArticulosActionPerformed
 
     private void subMenuClientesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subMenuClientesActionPerformed
-        /* cargarFormulario(() -> frmClientes.getInstancia()); */
+       cargarFormulario(() -> new frmCliente().getInstancia());
     }//GEN-LAST:event_subMenuClientesActionPerformed
 
     private void subMenuComunicacionesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subMenuComunicacionesActionPerformed
