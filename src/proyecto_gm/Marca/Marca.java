@@ -32,13 +32,11 @@ public class Marca {
         this.descripcion = descripcion;
     }
 
-    // Para que se muestre correctamente en el JComboBox
     @Override
     public String toString() {
         return descripcion;
     }
 
-    // Esenciales para que la selección en el ComboBox funcione correctamente
     @Override
     public boolean equals(Object o) {
         if (this == o) {

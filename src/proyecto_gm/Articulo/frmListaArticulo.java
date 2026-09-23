@@ -21,32 +21,24 @@ import net.sf.jasperreports.view.JasperViewer;
 import proyecto_gm.Categoria.Categoria;
 import proyecto_gm.Categoria.DatosCategoria;
 import principal.ConexionBD;
-import principal.ControladorExportar;
-
 
 public class frmListaArticulo extends javax.swing.JInternalFrame {
-    private static frmListaArticulo instancia;   
-    
+
+    private static frmListaArticulo instancia;
+
     DefaultTableModel modelo;
     List<Articulo> listaArticulos;
     TableRowSorter<DefaultTableModel> sorter;
 
     public frmListaArticulo() {
         initComponents();
-        
+
         modelo = (DefaultTableModel) tblarticulo.getModel();
-//        modelo.addColumn("ID");
-//        modelo.addColumn("Descripción");
-//        modelo.addColumn("Características");
-//        modelo.addColumn("Categoría");
-//        modelo.addColumn("Marca");
-//        modelo.addColumn("Cantidad");
         tblarticulo.setModel(modelo);
-        
-        // Asignar el sorter para permitir filtrado dinámico
+
         sorter = new TableRowSorter<>(modelo);
         tblarticulo.setRowSorter(sorter);
-        tblarticulo.setShowGrid(true); 
+        tblarticulo.setShowGrid(true);
         tblarticulo.setGridColor(java.awt.Color.BLACK);
         tblarticulo.setShowHorizontalLines(true);
         tblarticulo.setShowVerticalLines(true);
@@ -54,22 +46,21 @@ public class frmListaArticulo extends javax.swing.JInternalFrame {
         cargarDatos();
         cargarComboCategorias();
     }
-    
+
     public static frmListaArticulo getInstancia() {
         if (instancia == null) {
             instancia = new frmListaArticulo();
         }
         return instancia;
     }
-    
+
     @Override
     public void dispose() {
         super.dispose();
         instancia = null;
     }
-    
+
     public void cargarDatos() {
-        tblarticulo.setModel(new DefaultTableModel()); 
         modelo.setRowCount(0);
         listaArticulos = DatosArticulos.listar();
         for (Articulo art : listaArticulos) {
@@ -78,18 +69,18 @@ public class frmListaArticulo extends javax.swing.JInternalFrame {
                 art.getCategoria().getDescripcion(),
                 art.getMarca().getDescripcion(),
                 art.getCaracteristicas(),
-                art.getDescripcion(),                                                
+                art.getDescripcion(),
                 art.getCantidad()
             });
         }
         tblarticulo.setModel(modelo);
-        tblarticulo.setRowSorter(sorter); 
+        tblarticulo.setRowSorter(sorter);
     }
-    
+
     public void generarReporteJasper(int idCategoria, String nombreCategoria) {
         try {
             Connection conn = ConexionBD.getConexionCompartida();
-            String path = System.getProperty("user.dir") +"/reportes/RPTArticulo.jasper";
+            String path = System.getProperty("user.dir") + "/reportes/RPTArticulo.jasper";
             JasperReport reporte = JasperCompileManager.compileReport(path);
 
             Map<String, Object> parametros = new HashMap<>();
@@ -102,21 +93,22 @@ public class frmListaArticulo extends javax.swing.JInternalFrame {
 
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, "Error: " + ex.getMessage());
-            ex.printStackTrace(); 
+            ex.printStackTrace();
         }
     }
-    
-   private void cargarComboCategorias() {
-  
+
+    private void cargarComboCategorias() {
+
         javax.swing.SwingWorker<List<Categoria>, Void> worker = new javax.swing.SwingWorker<List<Categoria>, Void>() {
             @Override
             protected List<Categoria> doInBackground() throws Exception {
                 return DatosCategoria.listar();
             }
+
             @Override
             protected void done() {
                 try {
-                    List<Categoria> lista = get(); 
+                    List<Categoria> lista = get();
                     for (java.awt.event.ActionListener al : cmbCategoria.getActionListeners()) {
                         cmbCategoria.removeActionListener(al);
                     }
@@ -133,6 +125,7 @@ public class frmListaArticulo extends javax.swing.JInternalFrame {
 
         worker.execute();
     }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -146,6 +139,8 @@ public class frmListaArticulo extends javax.swing.JInternalFrame {
         btnBuscar = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
         cboEstado = new javax.swing.JComboBox<>();
+        cmbCategoria = new javax.swing.JComboBox<>();
+        jLabel3 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         jToolBar1 = new javax.swing.JToolBar();
         jSeparator2 = new javax.swing.JToolBar.Separator();
@@ -154,8 +149,6 @@ public class frmListaArticulo extends javax.swing.JInternalFrame {
         btnEliminar = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JToolBar.Separator();
         btnReporte = new javax.swing.JButton();
-        cmbCategoria = new javax.swing.JComboBox<>();
-        btnExportarExcel = new javax.swing.JButton();
 
         setClosable(true);
         setIconifiable(true);
@@ -180,9 +173,9 @@ public class frmListaArticulo extends javax.swing.JInternalFrame {
         });
         jScrollPane1.setViewportView(tblarticulo);
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
-        jLabel1.setText("Buscar");
+        jLabel1.setText("Buscar:");
 
         txtBusqueda.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
@@ -207,6 +200,14 @@ public class frmListaArticulo extends javax.swing.JInternalFrame {
             }
         });
 
+        cmbCategoria.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbCategoriaActionPerformed(evt);
+            }
+        });
+
+        jLabel3.setText("Categoría");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -215,26 +216,35 @@ public class frmListaArticulo extends javax.swing.JInternalFrame {
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, 412, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addComponent(txtBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(cmbCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cboEstado, javax.swing.GroupLayout.PREFERRED_SIZE, 108, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnBuscar)
-                .addContainerGap(36, Short.MAX_VALUE))
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                .addComponent(txtBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addComponent(jLabel1)
-                .addComponent(btnBuscar)
-                .addComponent(jLabel2)
-                .addComponent(cboEstado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnBuscar)
+                    .addComponent(cboEstado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2)
+                    .addComponent(txtBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1)
+                    .addComponent(cmbCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3))
+                .addContainerGap())
         );
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
 
         jToolBar1.setRollover(true);
         jToolBar1.add(jSeparator2);
@@ -242,6 +252,7 @@ public class frmListaArticulo extends javax.swing.JInternalFrame {
         btnNuevo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/agregar.png"))); // NOI18N
         btnNuevo.setToolTipText("Nuevo");
         btnNuevo.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        btnNuevo.setPreferredSize(new java.awt.Dimension(24, 24));
         btnNuevo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnNuevoActionPerformed(evt);
@@ -252,6 +263,7 @@ public class frmListaArticulo extends javax.swing.JInternalFrame {
         btnEditar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/editar.png"))); // NOI18N
         btnEditar.setToolTipText("Editar");
         btnEditar.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        btnEditar.setPreferredSize(new java.awt.Dimension(24, 24));
         btnEditar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnEditarActionPerformed(evt);
@@ -262,6 +274,7 @@ public class frmListaArticulo extends javax.swing.JInternalFrame {
         btnEliminar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iconos/eliminar.png"))); // NOI18N
         btnEliminar.setToolTipText("Eliminar");
         btnEliminar.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        btnEliminar.setPreferredSize(new java.awt.Dimension(24, 24));
         btnEliminar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnEliminarActionPerformed(evt);
@@ -275,6 +288,7 @@ public class frmListaArticulo extends javax.swing.JInternalFrame {
         btnReporte.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         btnReporte.setFocusable(false);
         btnReporte.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnReporte.setPreferredSize(new java.awt.Dimension(24, 24));
         btnReporte.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         btnReporte.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -283,34 +297,17 @@ public class frmListaArticulo extends javax.swing.JInternalFrame {
         });
         jToolBar1.add(btnReporte);
 
-        cmbCategoria.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmbCategoriaActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(cmbCategoria);
-
-        btnExportarExcel.setText("Exportar Excel");
-        btnExportarExcel.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnExportarExcelActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 311, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnExportarExcel)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-            .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addComponent(btnExportarExcel)
+            .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         javax.swing.GroupLayout escritorioLayout = new javax.swing.GroupLayout(escritorio);
@@ -319,93 +316,72 @@ public class frmListaArticulo extends javax.swing.JInternalFrame {
             escritorioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(escritorioLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(escritorioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(escritorioLayout.createSequentialGroup()
-                        .addGroup(escritorioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addGroup(escritorioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1))
                 .addContainerGap())
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         escritorioLayout.setVerticalGroup(
             escritorioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(escritorioLayout.createSequentialGroup()
-                .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(escritorio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(escritorio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(escritorio, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(escritorio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void cboEstadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboEstadoActionPerformed
-        //        String nombreEstado = this.cboEstado.getSelectedItem().toString().toLowerCase();
-        //        DefaultTableModel modelo = (DefaultTableModel) tblEmpleados.getModel();
-        //        switch (nombreEstado) {
-            //            case "activo":
-            //            DatosEmpleados.Listar(modelo,"A");
-            //
-            //            break;
-            //            case "inactivo":
-            //            DatosEmpleados.Listar(modelo, "I");
-            //
-            //            default:
-            //            DatosEmpleados.Listar(modelo);
-            //            break;
-            //        }
     }//GEN-LAST:event_cboEstadoActionPerformed
 
     private void txtBusquedaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtBusquedaKeyTyped
-        if(evt.getKeyChar()== KeyEvent.VK_ENTER){
-           if(!txtBusqueda.getText().trim().equals("")){
-               filtrarArticulos(txtBusqueda.getText());
-           }else{
+        if (evt.getKeyChar() == KeyEvent.VK_ENTER) {
+            if (!txtBusqueda.getText().trim().equals("")) {
+                filtrarArticulos(txtBusqueda.getText());
+            } else {
                 filtrarArticulos("");
-           }     
+            }
         }
     }//GEN-LAST:event_txtBusquedaKeyTyped
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
         int fila = tblarticulo.getSelectedRow();
         if (fila >= 0) {
-           
+
             Object[] opciones = {"Sí", "No"};
-            
-        
+
             int confirmacion = JOptionPane.showOptionDialog(
-                    this, 
-                    "¿Está seguro de eliminar este artículo?", 
-                    "Confirmación", 
+                    this,
+                    "¿Está seguro de eliminar este artículo?",
+                    "Confirmación",
                     JOptionPane.YES_NO_OPTION,
                     JOptionPane.QUESTION_MESSAGE,
                     null,
                     opciones,
-                    opciones[0] 
+                    opciones[0]
             );
 
-           
             if (confirmacion == 0) {
-                int idArticulo = (int) tblarticulo.getValueAt(fila, 0);
+                int filaModelo = tblarticulo.convertRowIndexToModel(fila);
+                int idArticulo = (int) tblarticulo.getModel().getValueAt(filaModelo, 0);
                 DatosArticulos.eliminar(idArticulo);
-                cargarDatos(); 
+                cargarDatos();
             }
         } else {
             JOptionPane.showMessageDialog(this, "Debe seleccionar un artículo para eliminar.", "Advertencia", JOptionPane.WARNING_MESSAGE);
@@ -414,7 +390,7 @@ public class frmListaArticulo extends javax.swing.JInternalFrame {
 
     private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
         int fila = tblarticulo.getSelectedRow();
-    
+
         if (fila >= 0) {
             JDesktopPane desktopPane = getDesktopPane();
             for (javax.swing.JInternalFrame frame : desktopPane.getAllFrames()) {
@@ -427,7 +403,7 @@ public class frmListaArticulo extends javax.swing.JInternalFrame {
                     } catch (java.beans.PropertyVetoException e) {
                         System.out.println("Error al enfocar la ventana: " + e.getMessage());
                     }
-                    return; 
+                    return;
                 }
             }
             int filaModelo = tblarticulo.convertRowIndexToModel(fila);
@@ -460,7 +436,7 @@ public class frmListaArticulo extends javax.swing.JInternalFrame {
                 } catch (java.beans.PropertyVetoException e) {
                     System.out.println("Error al enfocar la ventana: " + e.getMessage());
                 }
-                return; 
+                return;
             }
         }
         frmArticulo frm = new frmArticulo(this, null);
@@ -480,56 +456,45 @@ public class frmListaArticulo extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_btnBuscarActionPerformed
 
     private void cmbCategoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbCategoriaActionPerformed
-          try {
-               
-                Object seleccionado = cmbCategoria.getSelectedItem();
+        try {
 
-               
-                if (seleccionado instanceof Categoria) {
-                    Categoria cat = (Categoria) seleccionado;
-                    String nombreCategoria = cat.getDescripcion();
+            Object seleccionado = cmbCategoria.getSelectedItem();
 
-                   
-                    filtrarArticulos(nombreCategoria);
-                }
-            } catch (Exception e) {
-                System.out.println("Error al filtrar combo: " + e.getMessage());
+            if (seleccionado instanceof Categoria) {
+                Categoria cat = (Categoria) seleccionado;
+                String nombreCategoria = cat.getDescripcion();
+
+                filtrarArticulos(nombreCategoria);
             }
+        } catch (Exception e) {
+            System.out.println("Error al filtrar combo: " + e.getMessage());
+        }
     }//GEN-LAST:event_cmbCategoriaActionPerformed
 
     private void btnReporteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReporteActionPerformed
-        int idCategoria = ((Categoria) cmbCategoria.getSelectedItem()).getId(); 
-    
+        int idCategoria = ((Categoria) cmbCategoria.getSelectedItem()).getId();
+
         java.util.Map<String, Object> parametros = new java.util.HashMap<>();
         parametros.put("p_id_categoria", idCategoria);
-
-//        reportes.GeneradorReportes gen = new reportes.GeneradorReportes();
-//        gen.mostrarReporte("RPTArticulos", parametros);
     }//GEN-LAST:event_btnReporteActionPerformed
-
-    private void btnExportarExcelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExportarExcelActionPerformed
-//        proyecto_gm.ControladorExportar.exportarTablaExcel(tblarticulo);
-    }//GEN-LAST:event_btnExportarExcelActionPerformed
 
     private void filtrarArticulos(String texto) {
         try {
             if (texto.trim().isEmpty()) {
                 sorter.setRowFilter(null);
             } else {
-                // Filtra por columnas 1 (Descripción), 3 (Categoría), 4 (Marca)
-                sorter.setRowFilter(RowFilter.regexFilter("(?i).*" + Pattern.quote(texto) + ".*", 1, 3, 4));
+                sorter.setRowFilter(RowFilter.regexFilter("(?i).*" + Pattern.quote(texto) + ".*", 1, 2, 3, 4));
             }
         } catch (PatternSyntaxException ex) {
             System.err.println("Error en el filtro: " + ex.getMessage());
         }
     }
-        
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnEditar;
     private javax.swing.JButton btnEliminar;
-    private javax.swing.JButton btnExportarExcel;
     private javax.swing.JButton btnNuevo;
     private javax.swing.JButton btnReporte;
     private javax.swing.JComboBox<String> cboEstado;
@@ -537,6 +502,7 @@ public class frmListaArticulo extends javax.swing.JInternalFrame {
     private javax.swing.JPanel escritorio;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;

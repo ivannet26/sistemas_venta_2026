@@ -25,13 +25,11 @@ public class DatosArticulos {
                 art.setCaracteristicas(rs.getString("xCaracteristicas"));
                 art.setCantidad(rs.getDouble("xCantidad"));
 
-                // Crear objeto Categoria COMPLETO (con ID y Descripción)
                 Categoria cat = new Categoria();
                 cat.setId(rs.getInt("xIdCategoria"));
                 cat.setDescripcion(rs.getString("xDescripcionCat"));
                 art.setCategoria(cat);
 
-                // Crear objeto Marca COMPLETO (con ID y Descripción)
                 Marca mar = new Marca();
                 mar.setIdMarca(rs.getInt("xIdMarca"));
                 mar.setDescripcion(rs.getString("xDescripcionMar"));
@@ -52,11 +50,11 @@ public class DatosArticulos {
         }
         try ( CallableStatement cstmt = conn.prepareCall("{ CALL insertar_articulos(?, ?, ?, ?, ?, ?) }")) {
             cstmt.setInt(1, 0);
-            cstmt.setInt(2, art.getCategoria().getId());
-            cstmt.setInt(3, art.getMarca().getIdMarca());
-            cstmt.setString(4, art.getCaracteristicas());
-            cstmt.setString(5, art.getDescripcion());
-            cstmt.setDouble(6, art.getCantidad());
+            cstmt.setString(2, art.getDescripcion());
+            cstmt.setString(3, art.getCaracteristicas());
+            cstmt.setDouble(4, art.getCantidad());
+            cstmt.setInt(5, art.getCategoria().getId());
+            cstmt.setInt(6, art.getMarca().getIdMarca());
 
             cstmt.execute();
             JOptionPane.showMessageDialog(null, "Artículo registrado.", "Registro Exitoso", JOptionPane.INFORMATION_MESSAGE);
@@ -72,11 +70,11 @@ public class DatosArticulos {
         }
         try ( CallableStatement cstmt = conn.prepareCall("{ CALL actualizar_articulos(?, ?, ?, ?, ?, ?) }")) {
             cstmt.setInt(1, art.getId());
-            cstmt.setInt(2, art.getCategoria().getId());
-            cstmt.setInt(3, art.getMarca().getIdMarca());
-            cstmt.setString(4, art.getCaracteristicas());
-            cstmt.setString(5, art.getDescripcion());
-            cstmt.setDouble(6, art.getCantidad());
+            cstmt.setString(2, art.getDescripcion());
+            cstmt.setString(3, art.getCaracteristicas());
+            cstmt.setDouble(4, art.getCantidad());
+            cstmt.setInt(5, art.getCategoria().getId());
+            cstmt.setInt(6, art.getMarca().getIdMarca());
             cstmt.execute();
             JOptionPane.showMessageDialog(null, "Artículo actualizado.", "Actualización Exitosa", JOptionPane.INFORMATION_MESSAGE);
         } catch (SQLException ex) {
