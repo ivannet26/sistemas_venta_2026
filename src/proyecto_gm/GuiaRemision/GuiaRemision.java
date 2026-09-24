@@ -1,8 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-// GuiaRemision.java
 package proyecto_gm.GuiaRemision;
 
 import java.math.BigDecimal;
@@ -13,47 +8,39 @@ import java.util.List;
 
 public class GuiaRemision {
 
+    // Datos internos de control
     private long idGuia;
     private int idEmpresa;
-    private Long idComprobante;
-    private int idCliente;
+    private Integer idCliente;
     private int idUsuario;
-    private int idAlmacen;
-    private int idSerieGuia;
     private long correlativo;
+
+    // Datos visibles del formulario
     private Timestamp fechaEmision;
     private Date fechaInicioTraslado;
     private int idMotivo;
-    private String modalidadTraslado;
+
     private String direccionOrigen;
-    private String idUbigeoOrigen;
     private String direccionDestino;
-    private String idUbigeoDestino;
+
     private String destinatarioTipoDoc;
     private String destinatarioNumeroDoc;
     private String destinatarioNombre;
-    private Integer idTransportista;
-    private Integer idConductor;
-    private Integer idVehiculo;
-    private BigDecimal pesoTotal = BigDecimal.ZERO;
-    private String unidadPeso = "KGM";
-    private int numeroBultos;
+    private String destinatarioDireccion;
+
+    private String documentoTransportista;
+    private String licenciaConducir;
+    private String vehiculoMarcaPlaca;
+
+    // Datos informativos
     private String estado;
-    private Timestamp fechaDespacho;
-    private Timestamp fechaEntrega;
-    private String observaciones;
-    private Integer idUsuarioAnulacion;
-    private Timestamp fechaAnulacion;
+    private String codigoMotivo;
+    private String motivoDescripcion;
+
     private Timestamp fechaCreacion;
     private Timestamp fechaActualizacion;
 
-    private String serie;
-    private String codigoMotivo;
-    private String motivoDescripcion;
-    private String almacen;
-
     private List<Detalle> detalles = new ArrayList<>();
-    private List<ConformidadEntrega> conformidades = new ArrayList<>();
 
     public GuiaRemision() {
     }
@@ -74,19 +61,11 @@ public class GuiaRemision {
         this.idEmpresa = idEmpresa;
     }
 
-    public Long getIdComprobante() {
-        return idComprobante;
-    }
-
-    public void setIdComprobante(Long idComprobante) {
-        this.idComprobante = idComprobante;
-    }
-
-    public int getIdCliente() {
+    public Integer getIdCliente() {
         return idCliente;
     }
 
-    public void setIdCliente(int idCliente) {
+    public void setIdCliente(Integer idCliente) {
         this.idCliente = idCliente;
     }
 
@@ -96,22 +75,6 @@ public class GuiaRemision {
 
     public void setIdUsuario(int idUsuario) {
         this.idUsuario = idUsuario;
-    }
-
-    public int getIdAlmacen() {
-        return idAlmacen;
-    }
-
-    public void setIdAlmacen(int idAlmacen) {
-        this.idAlmacen = idAlmacen;
-    }
-
-    public int getIdSerieGuia() {
-        return idSerieGuia;
-    }
-
-    public void setIdSerieGuia(int idSerieGuia) {
-        this.idSerieGuia = idSerieGuia;
     }
 
     public long getCorrelativo() {
@@ -146,14 +109,6 @@ public class GuiaRemision {
         this.idMotivo = idMotivo;
     }
 
-    public String getModalidadTraslado() {
-        return modalidadTraslado;
-    }
-
-    public void setModalidadTraslado(String modalidadTraslado) {
-        this.modalidadTraslado = modalidadTraslado;
-    }
-
     public String getDireccionOrigen() {
         return direccionOrigen;
     }
@@ -162,28 +117,12 @@ public class GuiaRemision {
         this.direccionOrigen = direccionOrigen;
     }
 
-    public String getIdUbigeoOrigen() {
-        return idUbigeoOrigen;
-    }
-
-    public void setIdUbigeoOrigen(String idUbigeoOrigen) {
-        this.idUbigeoOrigen = idUbigeoOrigen;
-    }
-
     public String getDireccionDestino() {
         return direccionDestino;
     }
 
     public void setDireccionDestino(String direccionDestino) {
         this.direccionDestino = direccionDestino;
-    }
-
-    public String getIdUbigeoDestino() {
-        return idUbigeoDestino;
-    }
-
-    public void setIdUbigeoDestino(String idUbigeoDestino) {
-        this.idUbigeoDestino = idUbigeoDestino;
     }
 
     public String getDestinatarioTipoDoc() {
@@ -210,52 +149,40 @@ public class GuiaRemision {
         this.destinatarioNombre = destinatarioNombre;
     }
 
-    public Integer getIdTransportista() {
-        return idTransportista;
+    public String getDestinatarioDireccion() {
+        return destinatarioDireccion;
     }
 
-    public void setIdTransportista(Integer idTransportista) {
-        this.idTransportista = idTransportista;
+    public void setDestinatarioDireccion(String destinatarioDireccion) {
+        this.destinatarioDireccion = destinatarioDireccion;
     }
 
-    public Integer getIdConductor() {
-        return idConductor;
+    public String getDocumentoTransportista() {
+        return documentoTransportista;
     }
 
-    public void setIdConductor(Integer idConductor) {
-        this.idConductor = idConductor;
+    public void setDocumentoTransportista(
+            String documentoTransportista) {
+
+        this.documentoTransportista = documentoTransportista;
     }
 
-    public Integer getIdVehiculo() {
-        return idVehiculo;
+    public String getLicenciaConducir() {
+        return licenciaConducir;
     }
 
-    public void setIdVehiculo(Integer idVehiculo) {
-        this.idVehiculo = idVehiculo;
+    public void setLicenciaConducir(String licenciaConducir) {
+        this.licenciaConducir = licenciaConducir;
     }
 
-    public BigDecimal getPesoTotal() {
-        return pesoTotal;
+    public String getVehiculoMarcaPlaca() {
+        return vehiculoMarcaPlaca;
     }
 
-    public void setPesoTotal(BigDecimal pesoTotal) {
-        this.pesoTotal = pesoTotal;
-    }
+    public void setVehiculoMarcaPlaca(
+            String vehiculoMarcaPlaca) {
 
-    public String getUnidadPeso() {
-        return unidadPeso;
-    }
-
-    public void setUnidadPeso(String unidadPeso) {
-        this.unidadPeso = unidadPeso;
-    }
-
-    public int getNumeroBultos() {
-        return numeroBultos;
-    }
-
-    public void setNumeroBultos(int numeroBultos) {
-        this.numeroBultos = numeroBultos;
+        this.vehiculoMarcaPlaca = vehiculoMarcaPlaca;
     }
 
     public String getEstado() {
@@ -264,70 +191,6 @@ public class GuiaRemision {
 
     public void setEstado(String estado) {
         this.estado = estado;
-    }
-
-    public Timestamp getFechaDespacho() {
-        return fechaDespacho;
-    }
-
-    public void setFechaDespacho(Timestamp fechaDespacho) {
-        this.fechaDespacho = fechaDespacho;
-    }
-
-    public Timestamp getFechaEntrega() {
-        return fechaEntrega;
-    }
-
-    public void setFechaEntrega(Timestamp fechaEntrega) {
-        this.fechaEntrega = fechaEntrega;
-    }
-
-    public String getObservaciones() {
-        return observaciones;
-    }
-
-    public void setObservaciones(String observaciones) {
-        this.observaciones = observaciones;
-    }
-
-    public Integer getIdUsuarioAnulacion() {
-        return idUsuarioAnulacion;
-    }
-
-    public void setIdUsuarioAnulacion(Integer idUsuarioAnulacion) {
-        this.idUsuarioAnulacion = idUsuarioAnulacion;
-    }
-
-    public Timestamp getFechaAnulacion() {
-        return fechaAnulacion;
-    }
-
-    public void setFechaAnulacion(Timestamp fechaAnulacion) {
-        this.fechaAnulacion = fechaAnulacion;
-    }
-
-    public Timestamp getFechaCreacion() {
-        return fechaCreacion;
-    }
-
-    public void setFechaCreacion(Timestamp fechaCreacion) {
-        this.fechaCreacion = fechaCreacion;
-    }
-
-    public Timestamp getFechaActualizacion() {
-        return fechaActualizacion;
-    }
-
-    public void setFechaActualizacion(Timestamp fechaActualizacion) {
-        this.fechaActualizacion = fechaActualizacion;
-    }
-
-    public String getSerie() {
-        return serie;
-    }
-
-    public void setSerie(String serie) {
-        this.serie = serie;
     }
 
     public String getCodigoMotivo() {
@@ -342,16 +205,30 @@ public class GuiaRemision {
         return motivoDescripcion;
     }
 
-    public void setMotivoDescripcion(String motivoDescripcion) {
+    public void setMotivoDescripcion(
+            String motivoDescripcion) {
+
         this.motivoDescripcion = motivoDescripcion;
     }
 
-    public String getAlmacen() {
-        return almacen;
+    public Timestamp getFechaCreacion() {
+        return fechaCreacion;
     }
 
-    public void setAlmacen(String almacen) {
-        this.almacen = almacen;
+    public void setFechaCreacion(
+            Timestamp fechaCreacion) {
+
+        this.fechaCreacion = fechaCreacion;
+    }
+
+    public Timestamp getFechaActualizacion() {
+        return fechaActualizacion;
+    }
+
+    public void setFechaActualizacion(
+            Timestamp fechaActualizacion) {
+
+        this.fechaActualizacion = fechaActualizacion;
     }
 
     public List<Detalle> getDetalles() {
@@ -359,24 +236,14 @@ public class GuiaRemision {
     }
 
     public void setDetalles(List<Detalle> detalles) {
-        this.detalles = detalles != null ? detalles : new ArrayList<>();
-    }
-
-    public List<ConformidadEntrega> getConformidades() {
-        return conformidades;
-    }
-
-    public void setConformidades(List<ConformidadEntrega> conformidades) {
-        this.conformidades = conformidades != null
-                ? conformidades : new ArrayList<>();
+        this.detalles = detalles != null
+                ? detalles
+                : new ArrayList<>();
     }
 
     @Override
     public String toString() {
-        if (serie == null || serie.trim().isEmpty()) {
-            return String.valueOf(idGuia);
-        }
-        return serie + "-" + correlativo;
+        return String.valueOf(idGuia);
     }
 
     public static class Detalle {
@@ -385,17 +252,18 @@ public class GuiaRemision {
         private long idGuia;
         private int numeroItem;
         private int idArticulo;
-        private Long idDetalleVenta;
+
+        private Integer idCategoria;
+
         private String codigoArticulo;
         private String descripcion;
-        private Integer idUnidadMedida;
-        private String unidadMedida;
-        private BigDecimal cantidad = BigDecimal.ZERO;
-        private BigDecimal pesoUnitario = BigDecimal.ZERO;
-        private BigDecimal pesoTotal = BigDecimal.ZERO;
+        private String categoriaDescripcion;
 
-        public Detalle() {
-        }
+        /*
+         * Esta cantidad corresponde exclusivamente a la cantidad
+         * mostrada en la guía. No representa ni modifica inventario.
+         */
+        private BigDecimal cantidad = BigDecimal.ZERO;
 
         public long getIdDetalleGuia() {
             return idDetalleGuia;
@@ -429,19 +297,21 @@ public class GuiaRemision {
             this.idArticulo = idArticulo;
         }
 
-        public Long getIdDetalleVenta() {
-            return idDetalleVenta;
+        public Integer getIdCategoria() {
+            return idCategoria;
         }
 
-        public void setIdDetalleVenta(Long idDetalleVenta) {
-            this.idDetalleVenta = idDetalleVenta;
+        public void setIdCategoria(Integer idCategoria) {
+            this.idCategoria = idCategoria;
         }
 
         public String getCodigoArticulo() {
             return codigoArticulo;
         }
 
-        public void setCodigoArticulo(String codigoArticulo) {
+        public void setCodigoArticulo(
+                String codigoArticulo) {
+
             this.codigoArticulo = codigoArticulo;
         }
 
@@ -453,20 +323,15 @@ public class GuiaRemision {
             this.descripcion = descripcion;
         }
 
-        public Integer getIdUnidadMedida() {
-            return idUnidadMedida;
+        public String getCategoriaDescripcion() {
+            return categoriaDescripcion;
         }
 
-        public void setIdUnidadMedida(Integer idUnidadMedida) {
-            this.idUnidadMedida = idUnidadMedida;
-        }
+        public void setCategoriaDescripcion(
+                String categoriaDescripcion) {
 
-        public String getUnidadMedida() {
-            return unidadMedida;
-        }
-
-        public void setUnidadMedida(String unidadMedida) {
-            this.unidadMedida = unidadMedida;
+            this.categoriaDescripcion =
+                    categoriaDescripcion;
         }
 
         public BigDecimal getCantidad() {
@@ -476,91 +341,43 @@ public class GuiaRemision {
         public void setCantidad(BigDecimal cantidad) {
             this.cantidad = cantidad;
         }
-
-        public BigDecimal getPesoUnitario() {
-            return pesoUnitario;
-        }
-
-        public void setPesoUnitario(BigDecimal pesoUnitario) {
-            this.pesoUnitario = pesoUnitario;
-        }
-
-        public BigDecimal getPesoTotal() {
-            return pesoTotal;
-        }
-
-        public void setPesoTotal(BigDecimal pesoTotal) {
-            this.pesoTotal = pesoTotal;
-        }
     }
 
-    public static class ConformidadEntrega {
+    public static class Categoria {
 
-        private long idConformidad;
-        private long idGuia;
-        private int idUsuario;
-        private Timestamp fechaEntrega;
-        private String receptorNombre;
-        private String receptorDocumento;
-        private String observaciones;
+        private int idCategoria;
+        private String descripcion;
 
-        public ConformidadEntrega() {
+        public Categoria() {
         }
 
-        public long getIdConformidad() {
-            return idConformidad;
+        public Categoria(
+                int idCategoria,
+                String descripcion) {
+
+            this.idCategoria = idCategoria;
+            this.descripcion = descripcion;
         }
 
-        public void setIdConformidad(long idConformidad) {
-            this.idConformidad = idConformidad;
+        public int getIdCategoria() {
+            return idCategoria;
         }
 
-        public long getIdGuia() {
-            return idGuia;
+        public void setIdCategoria(int idCategoria) {
+            this.idCategoria = idCategoria;
         }
 
-        public void setIdGuia(long idGuia) {
-            this.idGuia = idGuia;
+        public String getDescripcion() {
+            return descripcion;
         }
 
-        public int getIdUsuario() {
-            return idUsuario;
+        public void setDescripcion(String descripcion) {
+            this.descripcion = descripcion;
         }
 
-        public void setIdUsuario(int idUsuario) {
-            this.idUsuario = idUsuario;
-        }
-
-        public Timestamp getFechaEntrega() {
-            return fechaEntrega;
-        }
-
-        public void setFechaEntrega(Timestamp fechaEntrega) {
-            this.fechaEntrega = fechaEntrega;
-        }
-
-        public String getReceptorNombre() {
-            return receptorNombre;
-        }
-
-        public void setReceptorNombre(String receptorNombre) {
-            this.receptorNombre = receptorNombre;
-        }
-
-        public String getReceptorDocumento() {
-            return receptorDocumento;
-        }
-
-        public void setReceptorDocumento(String receptorDocumento) {
-            this.receptorDocumento = receptorDocumento;
-        }
-
-        public String getObservaciones() {
-            return observaciones;
-        }
-
-        public void setObservaciones(String observaciones) {
-            this.observaciones = observaciones;
+        @Override
+        public String toString() {
+            return descripcion;
         }
     }
 }

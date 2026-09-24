@@ -1,8 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-// DatosGuiaRemision.java
 package proyecto_gm.GuiaRemision;
 
 import java.math.BigDecimal;
@@ -11,507 +6,462 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.swing.JOptionPane;
+
 import principal.ConexionBD;
 
 public class DatosGuiaRemision {
 
-    public static List<GuiaRemision> listar(long idGuia) {
-        List<GuiaRemision> listaEntidad = new ArrayList<>();
+        private static Connection obtenerConexion()
+                        throws SQLException {
 
-        Connection conn = ConexionBD.getConexionCompartida();
-        if (conn == null) return listaEntidad;
-        try (CallableStatement cstmt
-                      = conn.prepareCall("{ CALL sp_obtener_guiaremision(?) }")) {
+                Connection conn = ConexionBD.getConnection();
 
-            cstmt.setLong(1, idGuia);
-
-            boolean tieneResultado = cstmt.execute();
-            int numeroResultado = 0;
-            GuiaRemision guia = null;
-
-            while (true) {
-                if (tieneResultado) {
-                    try (ResultSet rs = cstmt.getResultSet()) {
-                        if (numeroResultado == 0) {
-                            if (rs.next()) {
-                                guia = mapearGuia(rs);
-                                listaEntidad.add(guia);
-                            }
-                        } else if (numeroResultado == 1 && guia != null) {
-                            while (rs.next()) {
-                                guia.getDetalles().add(mapearDetalle(rs));
-                            }
-                        } else if (numeroResultado == 2 && guia != null) {
-                            while (rs.next()) {
-                                guia.getConformidades().add(
-                                        mapearConformidad(rs)
-                                );
-                            }
-                        }
-                    }
-
-                    numeroResultado++;
-                } else if (cstmt.getUpdateCount() == -1) {
-                    break;
+                if (conn == null) {
+                        throw new SQLException(
+                                        "No existe conexión con la base de datos.");
                 }
 
-                tieneResultado = cstmt.getMoreResults(
-                        Statement.CLOSE_CURRENT_RESULT
-                );
-            }
-
-        } catch (SQLException ex) {
-            mostrarError("Error al obtener la guía de remisión", ex);
+                return conn;
         }
 
-        return listaEntidad;
-    }
+        public static String[] obtenerDatosEmpresaPorUsuario(
+                        String usuario) {
 
-    public static GuiaRemision obtener(long idGuia) {
-        List<GuiaRemision> listaEntidad = listar(idGuia);
-        return listaEntidad.isEmpty() ? null : listaEntidad.get(0);
-    }
+                String sql = "{CALL sp_datos_empresa_por_usuario(?)}";
 
-    public static boolean insertar(GuiaRemision guia) {
-        if (guia == null) {
-            JOptionPane.showMessageDialog(
-                    null,
-                    "La guía de remisión no puede ser nula.",
-                    "Validación",
-                    JOptionPane.WARNING_MESSAGE
-            );
-            return false;
+                try (Connection conn = obtenerConexion();
+                                CallableStatement cstmt = conn.prepareCall(sql)) {
+
+                        cstmt.setString(1, usuario);
+
+                        try (ResultSet rs = cstmt.executeQuery()) {
+                                if (rs.next()) {
+                                        return new String[] {
+                                                        rs.getString("ruc"),
+                                                        rs.getString("razonsocial"),
+                                                        rs.getString("direccion")
+                                        };
+                                }
+                        }
+
+                } catch (SQLException ex) {
+                        mostrarError(
+                                        "Error al cargar datos de empresa",
+                                        ex);
+                }
+
+                return null;
         }
 
-        if (guia.getDetalles() == null || guia.getDetalles().isEmpty()) {
-            JOptionPane.showMessageDialog(
-                    null,
-                    "La guía debe contener al menos un artículo.",
-                    "Validación",
-                    JOptionPane.WARNING_MESSAGE
-            );
-            return false;
+        public static List<GuiaRemision> listarMotivosFormulario() {
+
+                List<GuiaRemision> lista = new ArrayList<>();
+
+                String sql = "{CALL sp_listar_motivos_formulario()}";
+
+                try (Connection conn = obtenerConexion();
+                                CallableStatement cstmt = conn.prepareCall(sql);
+                                ResultSet rs = cstmt.executeQuery()) {
+
+                        while (rs.next()) {
+                                GuiaRemision motivo = new GuiaRemision();
+
+                                motivo.setIdMotivo(
+                                                rs.getInt("idmotivo"));
+
+                                motivo.setCodigoMotivo(
+                                                rs.getString("codigo"));
+
+                                motivo.setMotivoDescripcion(
+                                                rs.getString("descripcion"));
+
+                                lista.add(motivo);
+                        }
+
+                } catch (SQLException ex) {
+                        mostrarError(
+                                        "Error al cargar motivos de traslado",
+                                        ex);
+                }
+
+                return lista;
         }
 
-        String detallesJson = construirDetallesJson(guia.getDetalles());
+        public static GuiaRemision buscarDestinatarioFormulario(
+                        String documento) {
 
-        String procedimiento
-                = "{ CALL sp_registrar_guiaremision("
-                + "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, "
-                + "?, ?, ?, ?, ?, ?) }";
+                String sql = "{CALL sp_buscar_destinatario_formulario(?)}";
 
-        Connection conn = ConexionBD.getConexionCompartida();
-        if (conn == null) {
-            mostrarError("Error al registrar la guía de remisión", new SQLException("Sin conexión a BD"));
-            return false;
-        }
-        try (CallableStatement cstmt = conn.prepareCall(procedimiento)) {
+                try (Connection conn = obtenerConexion();
+                                CallableStatement cstmt = conn.prepareCall(sql)) {
 
-            cstmt.setInt(1, guia.getIdEmpresa());
-            setLongNulo(cstmt, 2, guia.getIdComprobante());
-            cstmt.setInt(3, guia.getIdCliente());
-            cstmt.setInt(4, guia.getIdUsuario());
-            cstmt.setInt(5, guia.getIdAlmacen());
-            cstmt.setInt(6, guia.getIdSerieGuia());
-            setTimestampNulo(cstmt, 7, guia.getFechaEmision());
-            setDateNulo(cstmt, 8, guia.getFechaInicioTraslado());
-            cstmt.setInt(9, guia.getIdMotivo());
-            cstmt.setString(10, guia.getModalidadTraslado());
-            cstmt.setString(11, guia.getDireccionOrigen());
-            cstmt.setString(12, guia.getIdUbigeoOrigen());
-            cstmt.setString(13, guia.getDireccionDestino());
-            cstmt.setString(14, guia.getIdUbigeoDestino());
-            setIntegerNulo(cstmt, 15, guia.getIdTransportista());
-            setIntegerNulo(cstmt, 16, guia.getIdConductor());
-            setIntegerNulo(cstmt, 17, guia.getIdVehiculo());
-            setDecimalNulo(cstmt, 18, guia.getPesoTotal());
-            cstmt.setInt(19, guia.getNumeroBultos());
-            setStringNulo(cstmt, 20, guia.getObservaciones());
-            cstmt.setString(21, detallesJson);
+                        cstmt.setString(1, documento);
 
-            cstmt.registerOutParameter(22, Types.BIGINT);
-            cstmt.registerOutParameter(23, Types.BIGINT);
+                        try (ResultSet rs = cstmt.executeQuery()) {
+                                if (rs.next()) {
+                                        GuiaRemision destinatario = new GuiaRemision();
 
-            cstmt.execute();
+                                        destinatario.setIdCliente(
+                                                        rs.getInt("idcliente"));
 
-            guia.setIdGuia(cstmt.getLong(22));
-            guia.setCorrelativo(cstmt.getLong(23));
-            guia.setEstado("EMITIDA");
+                                        destinatario.setDestinatarioTipoDoc(
+                                                        rs.getString("tipodocumento"));
 
-            JOptionPane.showMessageDialog(
-                    null,
-                    "Guía de remisión registrada correctamente.",
-                    "Registro exitoso",
-                    JOptionPane.INFORMATION_MESSAGE
-            );
+                                        destinatario.setDestinatarioNumeroDoc(
+                                                        rs.getString("numerodocumento"));
 
-            return true;
+                                        destinatario.setDestinatarioNombre(
+                                                        rs.getString("nombre"));
 
-        } catch (SQLException ex) {
-            mostrarError("Error al registrar la guía de remisión", ex);
-            return false;
-        }
-    }
+                                        destinatario.setDestinatarioDireccion(
+                                                        rs.getString("direccion"));
 
-    public static boolean despachar(long idGuia, int idUsuario) {
-        Connection conn = ConexionBD.getConexionCompartida();
-        if (conn == null) return false;
-        try (CallableStatement cstmt = conn.prepareCall(
-                      "{ CALL sp_despachar_guiaremision(?, ?) }"
-              )) {
+                                        destinatario.setDireccionDestino(
+                                                        rs.getString("direccion"));
 
-            cstmt.setLong(1, idGuia);
-            cstmt.setInt(2, idUsuario);
-            cstmt.execute();
+                                        return destinatario;
+                                }
+                        }
 
-            JOptionPane.showMessageDialog(
-                    null,
-                    "Guía despachada correctamente.",
-                    "Despacho exitoso",
-                    JOptionPane.INFORMATION_MESSAGE
-            );
+                } catch (SQLException ex) {
+                        mostrarError(
+                                        "Error al buscar destinatario",
+                                        ex);
+                }
 
-            return true;
-
-        } catch (SQLException ex) {
-            mostrarError("Error al despachar la guía de remisión", ex);
-            return false;
-        }
-    }
-
-    public static boolean registrarEntrega(
-            long idGuia,
-            int idUsuario,
-            Timestamp fechaEntrega,
-            String receptorNombre,
-            String receptorDocumento,
-            String observaciones) {
-
-        Connection conn = ConexionBD.getConexionCompartida();
-        if (conn == null) return false;
-        try (CallableStatement cstmt = conn.prepareCall(
-                      "{ CALL sp_registrar_entregaguia(?, ?, ?, ?, ?, ?) }"
-              )) {
-
-            cstmt.setLong(1, idGuia);
-            cstmt.setInt(2, idUsuario);
-            setTimestampNulo(cstmt, 3, fechaEntrega);
-            cstmt.setString(4, receptorNombre);
-            setStringNulo(cstmt, 5, receptorDocumento);
-            setStringNulo(cstmt, 6, observaciones);
-
-            cstmt.execute();
-
-            JOptionPane.showMessageDialog(
-                    null,
-                    "Entrega registrada correctamente.",
-                    "Entrega exitosa",
-                    JOptionPane.INFORMATION_MESSAGE
-            );
-
-            return true;
-
-        } catch (SQLException ex) {
-            mostrarError("Error al registrar la entrega de la guía", ex);
-            return false;
-        }
-    }
-
-    public static boolean anular(
-            long idGuia,
-            int idUsuario,
-            String motivo) {
-
-        Connection conn = ConexionBD.getConexionCompartida();
-        if (conn == null) return false;
-        try (CallableStatement cstmt = conn.prepareCall(
-                      "{ CALL sp_anular_guiaremision(?, ?, ?) }"
-              )) {
-
-            cstmt.setLong(1, idGuia);
-            cstmt.setInt(2, idUsuario);
-            cstmt.setString(3, motivo);
-            cstmt.execute();
-
-            JOptionPane.showMessageDialog(
-                    null,
-                    "Guía de remisión anulada correctamente.",
-                    "Anulación exitosa",
-                    JOptionPane.INFORMATION_MESSAGE
-            );
-
-            return true;
-
-        } catch (SQLException ex) {
-            mostrarError("Error al anular la guía de remisión", ex);
-            return false;
-        }
-    }
-
-    private static GuiaRemision mapearGuia(ResultSet rs)
-            throws SQLException {
-
-        GuiaRemision guia = new GuiaRemision();
-
-        guia.setIdGuia(rs.getLong("idguia"));
-        guia.setIdEmpresa(rs.getInt("idempresa"));
-        guia.setIdComprobante(
-                obtenerLongNulo(rs, "idcomprobante")
-        );
-        guia.setIdCliente(rs.getInt("idcliente"));
-        guia.setIdUsuario(rs.getInt("idusuario"));
-        guia.setIdAlmacen(rs.getInt("idalmacen"));
-        guia.setIdSerieGuia(rs.getInt("idserieguia"));
-        guia.setCorrelativo(rs.getLong("correlativo"));
-        guia.setFechaEmision(rs.getTimestamp("fechaemision"));
-        guia.setFechaInicioTraslado(
-                rs.getDate("fechainiciotraslado")
-        );
-        guia.setIdMotivo(rs.getInt("idmotivo"));
-        guia.setModalidadTraslado(
-                rs.getString("modalidadtraslado")
-        );
-        guia.setDireccionOrigen(rs.getString("direccionorigen"));
-        guia.setIdUbigeoOrigen(rs.getString("idubigeoorigen"));
-        guia.setDireccionDestino(rs.getString("direcciondestino"));
-        guia.setIdUbigeoDestino(rs.getString("idubigeodestino"));
-        guia.setDestinatarioTipoDoc(
-                rs.getString("destinatariotipodoc")
-        );
-        guia.setDestinatarioNumeroDoc(
-                rs.getString("destinatarionumerodoc")
-        );
-        guia.setDestinatarioNombre(
-                rs.getString("destinatarionombre")
-        );
-        guia.setIdTransportista(
-                obtenerIntegerNulo(rs, "idtransportista")
-        );
-        guia.setIdConductor(
-                obtenerIntegerNulo(rs, "idconductor")
-        );
-        guia.setIdVehiculo(
-                obtenerIntegerNulo(rs, "idvehiculo")
-        );
-        guia.setPesoTotal(rs.getBigDecimal("pesototal"));
-        guia.setUnidadPeso(rs.getString("unidadpeso"));
-        guia.setNumeroBultos(rs.getInt("numerobultos"));
-        guia.setEstado(rs.getString("estado"));
-        guia.setFechaDespacho(rs.getTimestamp("fechadespacho"));
-        guia.setFechaEntrega(rs.getTimestamp("fechaentrega"));
-        guia.setObservaciones(rs.getString("observaciones"));
-        guia.setIdUsuarioAnulacion(
-                obtenerIntegerNulo(rs, "idusuarioanulacion")
-        );
-        guia.setFechaAnulacion(rs.getTimestamp("fechaanulacion"));
-        guia.setFechaCreacion(rs.getTimestamp("fechacreacion"));
-        guia.setFechaActualizacion(
-                rs.getTimestamp("fechaactualizacion")
-        );
-        guia.setSerie(rs.getString("serie"));
-        guia.setCodigoMotivo(rs.getString("codigomotivo"));
-        guia.setMotivoDescripcion(
-                rs.getString("motivodescripcion")
-        );
-        guia.setAlmacen(rs.getString("almacen"));
-
-        return guia;
-    }
-
-    private static GuiaRemision.Detalle mapearDetalle(ResultSet rs)
-            throws SQLException {
-
-        GuiaRemision.Detalle detalle = new GuiaRemision.Detalle();
-
-        detalle.setIdDetalleGuia(rs.getLong("iddetalleguia"));
-        detalle.setIdGuia(rs.getLong("idguia"));
-        detalle.setNumeroItem(rs.getInt("nroitem"));
-        detalle.setIdArticulo(rs.getInt("idarticulo"));
-        detalle.setIdDetalleVenta(
-                obtenerLongNulo(rs, "iddetalleventa")
-        );
-        detalle.setCodigoArticulo(rs.getString("codigoarticulo"));
-        detalle.setDescripcion(rs.getString("descripcion"));
-        detalle.setIdUnidadMedida(
-                obtenerIntegerNulo(rs, "idunidadmedida")
-        );
-        detalle.setUnidadMedida(rs.getString("unidadmedida"));
-        detalle.setCantidad(rs.getBigDecimal("cantidad"));
-        detalle.setPesoUnitario(rs.getBigDecimal("pesounitario"));
-        detalle.setPesoTotal(rs.getBigDecimal("pesototal"));
-
-        return detalle;
-    }
-
-    private static GuiaRemision.ConformidadEntrega mapearConformidad(
-            ResultSet rs) throws SQLException {
-
-        GuiaRemision.ConformidadEntrega conformidad
-                = new GuiaRemision.ConformidadEntrega();
-
-        conformidad.setIdConformidad(rs.getLong("idconformidad"));
-        conformidad.setIdGuia(rs.getLong("idguia"));
-        conformidad.setIdUsuario(rs.getInt("idusuario"));
-        conformidad.setFechaEntrega(rs.getTimestamp("fechaentrega"));
-        conformidad.setReceptorNombre(
-                rs.getString("receptornombre")
-        );
-        conformidad.setReceptorDocumento(
-                rs.getString("receptordocumento")
-        );
-        conformidad.setObservaciones(
-                rs.getString("observaciones")
-        );
-
-        return conformidad;
-    }
-
-    private static String construirDetallesJson(
-            List<GuiaRemision.Detalle> detalles) {
-
-        StringBuilder json = new StringBuilder("[");
-
-        for (int i = 0; i < detalles.size(); i++) {
-            GuiaRemision.Detalle detalle = detalles.get(i);
-
-            if (i > 0) {
-                json.append(",");
-            }
-
-            BigDecimal cantidad = detalle.getCantidad() != null
-                    ? detalle.getCantidad() : BigDecimal.ZERO;
-
-            BigDecimal pesoUnitario = detalle.getPesoUnitario() != null
-                    ? detalle.getPesoUnitario() : BigDecimal.ZERO;
-
-            json.append("{")
-                .append("\"idArticulo\":")
-                .append(detalle.getIdArticulo());
-
-            if (detalle.getIdDetalleVenta() != null) {
-                json.append(",\"idDetalleVenta\":")
-                    .append(detalle.getIdDetalleVenta());
-            }
-
-            if (detalle.getIdUnidadMedida() != null) {
-                json.append(",\"idUnidadMedida\":")
-                    .append(detalle.getIdUnidadMedida());
-            }
-
-            json.append(",\"cantidad\":")
-                .append(cantidad.toPlainString())
-                .append(",\"pesoUnitario\":")
-                .append(pesoUnitario.toPlainString())
-                .append("}");
+                return null;
         }
 
-        json.append("]");
-        return json.toString();
-    }
+        public static List<GuiaRemision.Categoria> listarCategoriasFormulario() {
 
-    private static Long obtenerLongNulo(
-            ResultSet rs,
-            String columna) throws SQLException {
+                List<GuiaRemision.Categoria> lista = new ArrayList<>();
 
-        long valor = rs.getLong(columna);
-        return rs.wasNull() ? null : valor;
-    }
+                String sql = "{CALL listar_categorias()}";
 
-    private static Integer obtenerIntegerNulo(
-            ResultSet rs,
-            String columna) throws SQLException {
+                try (Connection conn = obtenerConexion();
+                                CallableStatement cstmt = conn.prepareCall(sql);
+                                ResultSet rs = cstmt.executeQuery()) {
 
-        int valor = rs.getInt(columna);
-        return rs.wasNull() ? null : valor;
-    }
+                        while (rs.next()) {
 
-    private static void setLongNulo(
-            CallableStatement cstmt,
-            int indice,
-            Long valor) throws SQLException {
+                                GuiaRemision.Categoria categoria = new GuiaRemision.Categoria();
 
-        if (valor == null) {
-            cstmt.setNull(indice, Types.BIGINT);
-        } else {
-            cstmt.setLong(indice, valor);
+                                categoria.setIdCategoria(
+                                                rs.getInt("IdCategoria"));
+
+                                categoria.setDescripcion(
+                                                rs.getString("Descripcion"));
+
+                                lista.add(categoria);
+                        }
+
+                } catch (SQLException ex) {
+                        mostrarError(
+                                        "Error al cargar las categorías",
+                                        ex);
+                }
+
+                return lista;
         }
-    }
 
-    private static void setIntegerNulo(
-            CallableStatement cstmt,
-            int indice,
-            Integer valor) throws SQLException {
+        public static List<GuiaRemision.Detalle> listarArticulosFormulario(
+                        String busqueda,
+                        Integer idCategoria) {
 
-        if (valor == null) {
-            cstmt.setNull(indice, Types.INTEGER);
-        } else {
-            cstmt.setInt(indice, valor);
+                List<GuiaRemision.Detalle> lista = new ArrayList<>();
+
+                String sql = "{CALL "
+                                + "sp_listar_articulos_guia_formulario"
+                                + "(?,?)}";
+
+                try (Connection conn = obtenerConexion();
+                                CallableStatement cstmt = conn.prepareCall(sql)) {
+
+                        if (busqueda == null
+                                        || busqueda.trim().isEmpty()) {
+
+                                cstmt.setNull(
+                                                1,
+                                                Types.VARCHAR);
+                        } else {
+                                cstmt.setString(
+                                                1,
+                                                busqueda.trim());
+                        }
+
+                        if (idCategoria == null) {
+                                cstmt.setNull(
+                                                2,
+                                                Types.INTEGER);
+                        } else {
+                                cstmt.setInt(
+                                                2,
+                                                idCategoria);
+                        }
+
+                        try (ResultSet rs = cstmt.executeQuery()) {
+
+                                while (rs.next()) {
+
+                                        GuiaRemision.Detalle articulo = new GuiaRemision.Detalle();
+
+                                        articulo.setIdArticulo(
+                                                        rs.getInt("idarticulo"));
+
+                                        articulo.setCodigoArticulo(
+                                                        rs.getString("codigoarticulo"));
+
+                                        articulo.setDescripcion(
+                                                        rs.getString("descripcion"));
+
+                                        articulo.setIdCategoria(
+                                                        obtenerIntegerNulo(
+                                                                        rs,
+                                                                        "idcategoria"));
+
+                                        articulo.setCategoriaDescripcion(
+                                                        rs.getString("categoria"));
+
+                                        lista.add(articulo);
+                                }
+                        }
+
+                } catch (SQLException ex) {
+                        mostrarError(
+                                        "Error al cargar los artículos",
+                                        ex);
+                }
+
+                return lista;
         }
-    }
 
-    private static void setStringNulo(
-            CallableStatement cstmt,
-            int indice,
-            String valor) throws SQLException {
+        public static boolean insertar(
+                        GuiaRemision guia) {
 
-        if (valor == null || valor.trim().isEmpty()) {
-            cstmt.setNull(indice, Types.VARCHAR);
-        } else {
-            cstmt.setString(indice, valor);
+                if (guia == null) {
+                        advertir(
+                                        "La guía de remisión no puede ser nula.");
+                        return false;
+                }
+
+                if (guia.getDetalles() == null
+                                || guia.getDetalles().isEmpty()) {
+
+                        advertir(
+                                        "La guía debe contener al menos un artículo.");
+                        return false;
+                }
+
+                String detallesJson = construirDetallesJson(
+                                guia.getDetalles());
+
+                String sql = "{CALL sp_registrar_guiaremision_formulario("
+                                + "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}";
+
+                try (Connection conn = obtenerConexion();
+                                CallableStatement cstmt = conn.prepareCall(sql)) {
+
+                        cstmt.setString(
+                                        1,
+                                        ConexionBD.nomUsuario);
+
+                        if (guia.getIdCliente() == null) {
+                                cstmt.setNull(
+                                                2,
+                                                Types.INTEGER);
+                        } else {
+                                cstmt.setInt(
+                                                2,
+                                                guia.getIdCliente());
+                        }
+
+                        setDateNulo(
+                                        cstmt,
+                                        3,
+                                        guia.getFechaInicioTraslado());
+
+                        cstmt.setInt(
+                                        4,
+                                        guia.getIdMotivo());
+
+                        setStringNulo(
+                                        cstmt,
+                                        5,
+                                        guia.getDestinatarioTipoDoc());
+
+                        setStringNulo(
+                                        cstmt,
+                                        6,
+                                        guia.getDestinatarioNumeroDoc());
+
+                        setStringNulo(
+                                        cstmt,
+                                        7,
+                                        guia.getDestinatarioNombre());
+
+                        setStringNulo(
+                                        cstmt,
+                                        8,
+                                        guia.getDestinatarioDireccion());
+
+                        setStringNulo(
+                                        cstmt,
+                                        9,
+                                        guia.getDireccionOrigen());
+
+                        setStringNulo(
+                                        cstmt,
+                                        10,
+                                        guia.getDireccionDestino());
+
+                        setStringNulo(
+                                        cstmt,
+                                        11,
+                                        guia.getDocumentoTransportista());
+
+                        setStringNulo(
+                                        cstmt,
+                                        12,
+                                        guia.getLicenciaConducir());
+
+                        setStringNulo(
+                                        cstmt,
+                                        13,
+                                        guia.getVehiculoMarcaPlaca());
+
+                        cstmt.setString(
+                                        14,
+                                        detallesJson);
+
+                        cstmt.registerOutParameter(
+                                        15,
+                                        Types.BIGINT);
+
+                        cstmt.registerOutParameter(
+                                        16,
+                                        Types.BIGINT);
+
+                        cstmt.execute();
+
+                        guia.setIdGuia(
+                                        cstmt.getLong(15));
+
+                        guia.setCorrelativo(
+                                        cstmt.getLong(16));
+
+                        guia.setEstado("EMITIDA");
+
+                        JOptionPane.showMessageDialog(
+                                        null,
+                                        "Guía de remisión registrada correctamente.",
+                                        "Registro exitoso",
+                                        JOptionPane.INFORMATION_MESSAGE);
+
+                        return true;
+
+                } catch (SQLException ex) {
+                        mostrarError(
+                                        "Error al registrar la guía de remisión",
+                                        ex);
+                        return false;
+                }
         }
-    }
 
-    private static void setTimestampNulo(
-            CallableStatement cstmt,
-            int indice,
-            Timestamp valor) throws SQLException {
+        private static String construirDetallesJson(
+                        List<GuiaRemision.Detalle> detalles) {
 
-        if (valor == null) {
-            cstmt.setNull(indice, Types.TIMESTAMP);
-        } else {
-            cstmt.setTimestamp(indice, valor);
+                StringBuilder json = new StringBuilder("[");
+
+                for (int i = 0; i < detalles.size(); i++) {
+
+                        GuiaRemision.Detalle detalle = detalles.get(i);
+
+                        if (i > 0) {
+                                json.append(",");
+                        }
+
+                        BigDecimal cantidad = detalle.getCantidad() != null
+                                        ? detalle.getCantidad()
+                                        : BigDecimal.ZERO;
+
+                        json.append("{")
+                                        .append("\"idArticulo\":")
+                                        .append(detalle.getIdArticulo())
+                                        .append(",\"cantidad\":")
+                                        .append(cantidad.toPlainString())
+                                        .append("}");
+                }
+
+                json.append("]");
+
+                return json.toString();
         }
-    }
 
-    private static void setDateNulo(
-            CallableStatement cstmt,
-            int indice,
-            Date valor) throws SQLException {
+        private static Integer obtenerIntegerNulo(
+                        ResultSet rs,
+                        String columna) throws SQLException {
 
-        if (valor == null) {
-            cstmt.setNull(indice, Types.DATE);
-        } else {
-            cstmt.setDate(indice, valor);
+                int valor = rs.getInt(columna);
+
+                return rs.wasNull()
+                                ? null
+                                : valor;
         }
-    }
 
-    private static void setDecimalNulo(
-            CallableStatement cstmt,
-            int indice,
-            BigDecimal valor) throws SQLException {
+        private static void setStringNulo(
+                        CallableStatement cstmt,
+                        int indice,
+                        String valor) throws SQLException {
 
-        if (valor == null) {
-            cstmt.setNull(indice, Types.DECIMAL);
-        } else {
-            cstmt.setBigDecimal(indice, valor);
+                if (valor == null
+                                || valor.trim().isEmpty()) {
+
+                        cstmt.setNull(
+                                        indice,
+                                        Types.VARCHAR);
+
+                } else {
+                        cstmt.setString(
+                                        indice,
+                                        valor.trim());
+                }
         }
-    }
 
-    private static void mostrarError(
-            String mensaje,
-            SQLException ex) {
+        private static void setDateNulo(
+                        CallableStatement cstmt,
+                        int indice,
+                        Date valor) throws SQLException {
 
-        JOptionPane.showMessageDialog(
-                null,
-                mensaje + ": " + ex.getMessage(),
-                "Error de base de datos",
-                JOptionPane.ERROR_MESSAGE
-        );
-    }
+                if (valor == null) {
+                        cstmt.setNull(
+                                        indice,
+                                        Types.DATE);
+                } else {
+                        cstmt.setDate(indice, valor);
+                }
+        }
+
+        private static void advertir(String mensaje) {
+                JOptionPane.showMessageDialog(
+                                null,
+                                mensaje,
+                                "Validación",
+                                JOptionPane.WARNING_MESSAGE);
+        }
+
+        private static void mostrarError(
+                        String mensaje,
+                        SQLException ex) {
+
+                JOptionPane.showMessageDialog(
+                                null,
+                                mensaje + ": " + ex.getMessage(),
+                                "Error de base de datos",
+                                JOptionPane.ERROR_MESSAGE);
+        }
 }
