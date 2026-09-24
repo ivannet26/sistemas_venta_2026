@@ -13,13 +13,10 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/Users/danie/Documents/GM/sistemas_venta_2026/src/principal/ConexionBD.java</file>
-            <file>file:/C:/Users/danie/Documents/GM/sistemas_venta_2026/src/proyecto_gm/Articulo/frmArticulo.java</file>
             <file>file:/C:/Users/danie/Documents/GM/sistemas_venta_2026/src/proyecto_gm/Categoria/Categoria.java</file>
-            <file>file:/C:/Users/danie/Documents/GM/sistemas_venta_2026/src/proyecto_gm/Articulo/DatosArticulos.java</file>
-            <file>file:/C:/Users/danie/Documents/GM/sistemas_venta_2026/src/proyecto_gm/Marca/Marca.java</file>
-            <file>file:/C:/Users/danie/Documents/GM/sistemas_venta_2026/src/proyecto_gm/Articulo/frmListaArticulo.java</file>
-            <file>file:/C:/Users/danie/Documents/GM/sistemas_venta_2026/src/proyecto_gm/Cliente/frmCliente.java</file>
-            <file>file:/C:/Users/danie/Documents/GM/sistemas_venta_2026/src/proyecto_gm/Articulo/Articulo.java</file>
+            <file>file:/C:/Users/danie/Documents/GM/sistemas_venta_2026/src/proyecto_gm/Categoria/frmCategoria.java</file>
+            <file>file:/C:/Users/danie/Documents/GM/sistemas_venta_2026/src/proyecto_gm/Almacen/frmAlmacen.java</file>
+            <file>file:/C:/Users/danie/Documents/GM/sistemas_venta_2026/src/proyecto_gm/Almacen/Almacen.java</file>
         </group>
     </open-files>
 </project-private>
